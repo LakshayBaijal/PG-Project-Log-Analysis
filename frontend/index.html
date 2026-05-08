@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cisco SNMP Log Analysis Dashboard</title>
+    <meta name="description" content="Dashboard for analyzing Cisco SNMP wireless logs for security threats.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-network-wired"></i>
+                <h2>WLAN Sec-Ops</h2>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active" id="nav-dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
+                    <li id="nav-threat"><i class="fa-solid fa-shield-halved"></i> Threat Intel</li>
+                    <li id="nav-client"><i class="fa-solid fa-users"></i> Client Activity</li>
+                    <li id="nav-ap"><i class="fa-solid fa-wifi"></i> AP Analytics</li>
+                </ul>
+            </nav>
+            <div class="upload-section">
+                <h3><i class="fa-solid fa-upload"></i> Upload Log</h3>
+                <input type="file" id="log-upload" accept=".log,.txt" />
+                
+                <div class="date-filters">
+                    <div class="filter-group">
+                        <label for="start-datetime">Start Time (Optional)</label>
+                        <input type="datetime-local" id="start-datetime" class="dt-input" />
+                    </div>
+                    <div class="filter-group">
+                        <label for="end-datetime">End Time (Optional)</label>
+                        <input type="datetime-local" id="end-datetime" class="dt-input" />
+                    </div>
+                </div>
+
+                <button id="upload-btn" class="btn primary-btn">Analyze File</button>
+                <div class="divider"><span>OR</span></div>
+                <button id="sample-btn" class="btn secondary-btn">Run Sample Data</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <div>
+                    <h1>Security Analysis Dashboard</h1>
+                    <p class="subtitle">Real-time inference and threat detection from Cisco SNMP logs</p>
+                </div>
+                <div id="loading-spinner" class="spinner hidden">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Processing...
+                </div>
+            </header>
+
+            <div id="dashboard-content" class="hidden">
+                <!-- Threat Intelligence Panel -->
+                <section class="threat-panel" id="section-threat">
+                    <h2><i class="fa-solid fa-triangle-exclamation"></i> Security Threats Detected</h2>
+                    <p class="threat-desc">The following potential threats were identified during the log duration:</p>
+                    <div class="threat-grid" id="threat-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </section>
+
+                <!-- Suspected Actors Panel -->
+                <section class="advanced-analytics" id="section-actors" style="display: none; margin-bottom: 2.5rem;">
+                    <div class="table-card full-width" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.03);">
+                        <h3 style="color: #ef4444;"><i class="fa-solid fa-user-ninja"></i> Suspected Malicious MAC Addresses</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">The system has automatically flagged these devices based on heuristic behavioral rules.</p>
+                        <div class="table-container">
+                            <table id="suspects-table">
+                                <thead>
+                                    <tr>
+                                        <th>MAC Address</th>
+                                        <th>Suspected Attack Type</th>
+                                        <th>Reason / Rule Triggered</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Overview Metrics -->
+                <section class="metrics-grid" id="metrics-grid">
+                    <!-- Populated by JS -->
+                </section>
+
+                <!-- Charts Area Row 1 -->
+                <section class="charts-area" id="section-ap">
+                    <div class="chart-card">
+                        <h3>Events by WiFi Point (Top 10)</h3>
+                        <div class="chart-container">
+                            <canvas id="apEventsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Failed Logins Analysis</h3>
+                        <div class="chart-container">
+                            <canvas id="authChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Charts Area Row 2 -->
+                <section class="charts-area" id="section-client">
+                    <div class="chart-card">
+                        <h3>Top WiFi Networks (SSIDs)</h3>
+                        <div class="chart-container">
+                            <canvas id="ssidChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Why Users Disconnected</h3>
+                        <div class="chart-container">
+                            <canvas id="disconnectChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Charts Area Row 3 -->
+                <section class="charts-area">
+                    <div class="chart-card full-width">
+                        <h3>Most Active Users</h3>
+                        <div class="chart-container">
+                            <canvas id="activeUsersChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="welcome-screen">
+                <i class="fa-solid fa-shield-cat fa-5x"></i>
+                <h2>Ready to Analyze</h2>
+                <p>Upload a Cisco SNMP trap log file or run the sample dataset to view security insights.</p>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

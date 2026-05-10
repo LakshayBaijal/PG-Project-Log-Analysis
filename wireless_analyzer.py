@@ -63,6 +63,55 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 from contextlib import redirect_stdout
+import sys
+import io
+import os
+
+# Ensure stdout/stderr use UTF-8 on Windows to avoid UnicodeEncodeError
+# when printing box-drawing or other Unicode characters to the console.
+# This attempts the modern reconfigure API first, then falls back to
+# wrapping streams with TextIOWrapper. If both fail we silently continue
+# so the rest of the script can still run (writes to --out will work).
+try:
+    # set PYTHONIOENCODING for child processes and libraries that read it
+    os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    else:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True)
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace", line_buffering=True)
+except Exception:
+    # best-effort only; avoid failing early due to encoding issues
+    pass
+
+# Install a safe-print shim to gracefully handle consoles that cannot
+# encode box-drawing characters. The shim first attempts to write
+# UTF-8 bytes to the underlying buffer; if that fails it falls back
+# to replacing box-drawing characters with ASCII equivalents.
+try:
+    import builtins
+    _orig_print = builtins.print
+
+    def _safe_print(*args, **kwargs):
+        sep = kwargs.get('sep', ' ')
+        end = kwargs.get('end', '\n')
+        file = kwargs.get('file', sys.stdout)
+        try:
+            text = sep.join(str(a) for a in args) + end
+            try:
+                file.buffer.write(text.encode('utf-8', errors='replace'))
+            except Exception:
+                # fallback: replace box characters and use original print
+                text2 = text.replace('─', '-').replace('═', '=').replace('≥', '>=')
+                _orig_print(text2, **{k: v for k, v in kwargs.items() if k != 'file'})
+        except Exception:
+            _orig_print(*args, **kwargs)
+
+    builtins.print = _safe_print
+except Exception:
+    # if anything goes wrong installing the shim, continue with default print
+    pass
 
 from collections import Counter
 trap_oid_counter = Counter()
@@ -105,13 +154,12 @@ TRAP_EVENT_MAP = {
     ".1.3.6.1.4.1.9.9.599.0.20": "roam_complete",
     ".1.3.6.1.4.1.9.9.599.0.30": "rogue_ap_detected",
     ".1.3.6.1.4.1.9.9.599.0.31": "rogue_client_detected",
-    ".1.3.6.1.4.1.9.9.513.0.1":  "assoc",
-    ".1.3.6.1.4.1.9.9.513.0.2":  "disassoc",
-    ".1.3.6.1.4.1.9.9.513.0.3":  "deauth",
-    ".1.3.6.1.4.1.9.9.513.0.4":  "auth_fail",
-    ".1.3.6.1.4.1.9.9.513.0.10": "roam",
     ".1.3.6.1.6.3.1.1.5.3":      "link_down",
     ".1.3.6.1.6.3.1.1.5.4":      "link_up",
+    # AireSpace MIB mappings for Deauth/Disassoc/Assoc
+    ".1.3.6.1.4.1.14179.2.6.3.41":"disassoc",
+    ".1.3.6.1.4.1.14179.2.6.3.53":"deauth",
+    ".1.3.6.1.4.1.14179.2.6.3.2": "assoc",
 }
 
 # 802.11 reason codes — raw facts only
@@ -364,7 +412,16 @@ def split_traps(log_text):
 
 
 def valid_mac(mac):
-    return bool(re.match(r'^[0-9A-F:]{11,}$', mac.upper().strip()))
+    return bool(re.match(r'^([0-9A-F]{2}:){5}[0-9A-F]{2}$', mac.upper().strip()))
+
+def decode_hex_ssid(ssid):
+    ssid = ssid.strip()
+    if re.fullmatch(r'([0-9A-Fa-f]{2}\s)+[0-9A-Fa-f]{2}', ssid) or re.fullmatch(r'([0-9A-Fa-f]{2})+', ssid):
+        try:
+            return bytes.fromhex(ssid.replace(' ', '')).decode('utf-8', errors='replace')
+        except Exception:
+            pass
+    return ssid
 
 
 # ---------------------------------------------------------------------------
@@ -419,6 +476,8 @@ class WirelessAnalyzer:
         self.rogue_events   = []
         self.deauth_windows = []
         self._pending_assoc = {}   # mac → event (for session pairing)
+        self._recent_auth_fail = {}  # (mac, ap) → ts (for deduping immediate deauth-after-authfail)
+        self._recent_deauth = {}     # (mac, ap) → ts (for deduping immediate authfail-after-deauth)
 
     def _update_seen(self, mac, ts):
         if not mac or not ts:
@@ -465,12 +524,13 @@ class WirelessAnalyzer:
             mac        = fields.get("client_mac", "").upper().strip()
             mac        = mac if valid_mac(mac) else ""
             ap         = fields.get("ap_name") or fields.get("ap_mac") or src_ip or "unknown_ap"
-            ssid       = fields.get("ssid", "")
+            ssid       = decode_hex_ssid(fields.get("ssid", ""))
             username   = fields.get("username", "")
             client_ip  = fields.get("client_ip", "")
-            reason     = REASON_CODES.get(
-                             fields.get("reason_code", ""),
-                             fields.get("reason_code", ""))
+            raw_reason = fields.get("reason_code", "")
+            if event_type == "auth_fail" and not raw_reason:
+                raw_reason = fields.get("auth_fail_reason", "")
+            reason     = REASON_CODES.get(raw_reason, raw_reason)
             
             if not reason:
                 reason = "Unknown"
@@ -522,6 +582,8 @@ class WirelessAnalyzer:
                 if ssid:
                     self.ssid_sessions[ssid] += 1
                 if mac:
+                    if event_type == "auth_success":
+                        self.client_auth_ok[mac] += 1
                     prev = self._pending_assoc.get(mac)
                     if prev and prev["ap"] != ap:
                         self.client_roams[mac].append({
@@ -537,14 +599,23 @@ class WirelessAnalyzer:
                         "ssid": ssid,
                     }
             elif event_type in ("disassoc", "deauth"):
+                correlated_deauth = False
+                if event_type == "deauth" and mac and ts:
+                    self._recent_deauth[(mac, ap)] = ts
+                    recent = self._recent_auth_fail.get((mac, ap))
+                    if recent and 0 <= (ts - recent).total_seconds() <= 2:
+                        correlated_deauth = True
+
                 if event_type == "deauth":
-                    self.ap_deauths[ap] += 1
+                    if not correlated_deauth:
+                        self.ap_deauths[ap] += 1
                 else:
                     self.ap_disassocs[ap] += 1
                 if ts:
                     deauth_times_by_ap[ap].append(ts)
                 if mac:
-                    self.client_reasons[mac].append(reason)
+                    if not correlated_deauth:
+                        self.client_reasons[mac].append(reason)
                     if mac in self._pending_assoc:
                         start_ev = self._pending_assoc.pop(mac)
                         duration = None
@@ -560,18 +631,58 @@ class WirelessAnalyzer:
                                 < self.business_end
                             ),
                         })
+                    else:
+                        # Orphan end event (disconnect without a seen start in log)
+                        if not correlated_deauth:
+                            self.ap_sessions[ap] += 1
+                            if ssid:
+                                self.ssid_sessions[ssid] += 1
+                            # Treat it as a 0-second session so it shows up in client stats
+                            self.client_sessions[mac].append({
+                                "start": ts, "end": ts,
+                                "ap": ap, "ssid": ssid,
+                                "duration_sec": 0, "reason": reason,
+                                "off_hours": not (self.business_start <= (ts.hour if ts else 0) < self.business_end),
+                            })
 
             elif event_type == "auth_fail":
+                correlated = False
+                recent_deauth = self._recent_deauth.get((mac, ap))
+                if recent_deauth and ts and 0 <= (ts - recent_deauth).total_seconds() <= 2:
+                    correlated = True
+
+                # Count authentication failures as session attempts.
+                if not correlated:
+                    self.ap_sessions[ap] += 1
+                    if ssid:
+                        self.ssid_sessions[ssid] += 1
+                    if mac:
+                        self.client_sessions[mac].append({
+                            "start": ts, "end": ts,
+                            "ap": ap, "ssid": ssid,
+                            "duration_sec": 0, "reason": "Auth Failure",
+                            "off_hours": not (self.business_start <= (ts.hour if ts else 0) < self.business_end),
+                        })
+
                 self.ap_auth_fails[ap] += 1
                 if mac:
                     self.client_auth_fails[mac] += 1
+                    if ts:
+                        self._recent_auth_fail[(mac, ap)] = ts
                 if ssid:
                     self.ssid_auth_fails[ssid] += 1
                 else:
                     self.ssid_auth_fails["Unknown"] += 1
 
-            elif event_type == "auth_success":
-                self.client_auth_ok[mac] += 1
+                # If we already processed a deauth for this event, undo the deauth counts
+                if correlated:
+                    if self.ap_deauths[ap] > 0: self.ap_deauths[ap] -= 1
+                    if mac and self.client_reasons[mac]: self.client_reasons[mac].pop()
+                    # Also undo the orphan session created by that deauth
+                    if mac and self.client_sessions[mac] and self.client_sessions[mac][-1]["duration_sec"] == 0:
+                        self.client_sessions[mac].pop()
+                    if self.ap_sessions[ap] > 0: self.ap_sessions[ap] -= 1
+                    if ssid and self.ssid_sessions[ssid] > 0: self.ssid_sessions[ssid] -= 1
 
             elif event_type in ("roam", "roam_complete"):
                 if mac:
@@ -582,7 +693,17 @@ class WirelessAnalyzer:
             elif "rogue" in event_type:
                 self.rogue_events.append(event)
 
-            elif event_type in ("link_up", "link_down"):
+            elif event_type in (
+                "link_up",
+                "link_down",
+                # Cisco WLC: AP radio/interface up/down notifications
+                "ciscoLwappApIfUpNotify",
+                "ciscoLwappApIfDownNotify",
+                # Cisco IfExtensionMIB (common on IOS)
+                "cieLinkUp",
+                "cieLinkDown",
+                "cieDelayedLinkUpDownNotif",
+            ):
                 self.ap_link_events[ap].append({"ts": ts, "event": event_type})
 
         # Compute disjoint deauth burst windows (every window with ≥3 events in 60 s)
@@ -925,25 +1046,40 @@ def print_report(report, az):
     ov = report["overview"]
 
     def section(title):
-        print(f"\n{'─'*72}\n  {title}\n{'─'*72}")
+        s = f"\n{'─'*72}\n  {title}\n{'─'*72}"
+        try:
+            sys.stdout.buffer.write(s.encode('utf-8', errors='replace'))
+        except Exception:
+            print(s.replace('─', '-'))
 
-    print("\n" + "═"*72)
-    print("  WIRELESS SNMP TRAP ANALYSIS")
-    print("═"*72)
-    print(f"""
-  Trap blocks parsed             : {ov['total_trap_blocks']}
-  Unique client MACs             : {ov['unique_client_macs']}
-  Unique access points           : {ov['unique_aps']}
-  Unique SSIDs                   : {ov['unique_ssids']}
-  Completed (paired) sessions    : {ov['completed_sessions_paired']}
-  Total auth failures            : {ov['total_auth_failures']}
-  Clients with auth failures     : {ov['clients_with_auth_failures']}
-  Clients failed, never authed   : {ov['clients_failed_never_succeeded']}
-  Roam transitions               : {ov['total_roam_transitions']}
-  Rogue events                   : {ov['rogue_events']}
-  Off-hours events               : {ov['off_hours_events']}
-  Deauth burst windows (≥3/60s)  : {ov['deauth_windows_detected']}
-  Business hours configured      : {ov['business_hours']}""")
+    try:
+        sys.stdout.buffer.write(("\n" + "═"*72 + "\n").encode("utf-8", errors="replace"))
+        sys.stdout.buffer.write(("  WIRELESS SNMP TRAP ANALYSIS\n").encode("utf-8", errors="replace"))
+        sys.stdout.buffer.write(("═"*72 + "\n").encode("utf-8", errors="replace"))
+    except Exception:
+        # fallback to ASCII-only rendering when buffer isn't available
+        print("\n" + "="*72)
+        print("  WIRELESS SNMP TRAP ANALYSIS")
+        print("="*72)
+        content = (f"""
+    Trap blocks parsed             : {ov['total_trap_blocks']}
+    Unique client MACs             : {ov['unique_client_macs']}
+    Unique access points           : {ov['unique_aps']}
+    Unique SSIDs                   : {ov['unique_ssids']}
+    Completed (paired) sessions    : {ov['completed_sessions_paired']}
+    Total auth failures            : {ov['total_auth_failures']}
+    Clients with auth failures     : {ov['clients_with_auth_failures']}
+    Clients failed, never authed   : {ov['clients_failed_never_succeeded']}
+    Roam transitions               : {ov['total_roam_transitions']}
+    Rogue events                   : {ov['rogue_events']}
+    Off-hours events               : {ov['off_hours_events']}
+    Deauth burst windows (≥3/60s)  : {ov['deauth_windows_detected']}
+    Business hours configured      : {ov['business_hours']}""")
+        try:
+                sys.stdout.buffer.write(content.encode("utf-8", errors="replace"))
+        except Exception:
+                # fallback to normal print if buffer not available
+                print(content)
 
     section("ACCESS POINTS")
     print(f"  {'AP':<30} {'Clients':>7} {'1-time':>6} {'Repeat':>6} "
@@ -1070,9 +1206,14 @@ def print_report(report, az):
     else:
         print("  None detected.")
 
-    print("\n" + "═"*72)
-    print("  End of report.")
-    print("═"*72 + "\n")
+    try:
+        sys.stdout.buffer.write(("\n" + "═"*72 + "\n").encode("utf-8", errors="replace"))
+        sys.stdout.buffer.write(("  End of report.\n").encode("utf-8", errors="replace"))
+        sys.stdout.buffer.write(("═"*72 + "\n\n").encode("utf-8", errors="replace"))
+    except Exception:
+        print("\n" + "="*72)
+        print("  End of report.")
+        print("="*72 + "\n")
 
 
 # ---------------------------------------------------------------------------

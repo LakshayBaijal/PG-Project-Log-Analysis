@@ -1,951 +1,133 @@
 
-Loading 'snmptrap-20250522.log' ...
+Loading 'snmptrap-sample.log' ...
 Analyzing ...
-  Found 89476 trap blocks.
-  Parsed 89476 events.
-.1.3.6.1.4.1.9.9.599.0.9 17027
-.1.3.6.1.4.1.9.9.599.0.4 15712
-.1.3.6.1.4.1.9.9.599.0.8 15712
-.1.3.6.1.4.1.14179.2.6.3.41 10536
-.1.3.6.1.4.1.9.9.513.0.19 8628
-.1.3.6.1.4.1.14179.2.6.3.2 8133
-.1.3.6.1.4.1.14179.2.6.3.53 2502
-.1.3.6.1.4.1.14179.2.6.3.13 1975
-.1.3.6.1.4.1.14179.2.6.3.39 1969
-.1.3.6.1.4.1.9.9.615.0.1 1686
-.1.3.6.1.4.1.14179.2.6.3.11 980
-.1.3.6.1.4.1.14179.2.6.3.37 980
-.1.3.6.1.4.1.14179.2.6.3.27 959
-.1.3.6.1.4.1.9.9.610.0.5 903
-.1.3.6.1.4.1.9.9.513.1.6.1.0.2 457
-.1.3.6.1.4.1.9.9.599.0.2 382
-.1.3.6.1.4.1.14179.2.6.3.52 298
-.1.3.6.1.4.1.14179.2.6.3.70 236
-.1.3.6.1.4.1.14179.2.6.3.4 84
-.1.3.6.1.4.1.9.9.513.0.12 55
+  Found 4 trap blocks.
+  Parsed 4 events.
+.1.3.6.1.4.1.9.9.599.0.8 2
+.1.3.6.1.4.1.14179.2.6.3.2 1
+.1.3.6.1.4.1.14179.2.6.3.11 1
 
 ════════════════════════════════════════════════════════════════════════
   WIRELESS SNMP TRAP ANALYSIS
 ════════════════════════════════════════════════════════════════════════
 
-  Trap blocks parsed             : 89476
-  Unique client MACs             : 1320
-  Unique access points           : 260
-  Unique SSIDs                   : 364
-  Completed (paired) sessions    : 9294
-  Total auth failures            : 15712
-  Clients with auth failures     : 958
-  Clients failed, never authed   : 958
-  Roam transitions               : 842
-  Rogue events                   : 0
-  Off-hours events               : 20228
-  Deauth burst windows (≥3/60s)  : 4069
-  Business hours configured      : 08:00 – 20:00
-
 ────────────────────────────────────────────────────────────────────────
   ACCESS POINTS
-────────────────────────────────────────────────────────────────────────
-  AP                             Clients 1-time Repeat  Sessions  Deauths Disassocs  AuthFail  PeakHr
+────────────────────────────────────────────────────────────────────────  AP                             Clients 1-time Repeat  Sessions  Deauths Disassocs  AuthFail  PeakHr
   ────────────────────────────── ─────── ────── ────── ───────── ──────── ───────── ───────── ───────
-  Academic                           697    164    533      7144        0         0         0   14:xx
-  event                              437    123    314      3731        0         0         0   10:xx
-  default-group                      379    126    253      1975        0         0         0   18:xx
-  Vindhya_External_Canteen           316      2    314         0     1086         0      1086   10:xx
-  IASNLP                             279     68    211      2453        0         0         0   14:xx
-  KOHLI_FF_WING4_137                 209      0    209         1      763         0       763   13:xx
-  Admin_Block_UG_Floor               201      1    200         0      843         0       843   14:xx
-  Kohli_GF_Poster-Room               195      0    195         0      444         0       444   11:xx
-  Admin_Block_1st_Floor              175      0    175         0      675         0       675   14:xx
-  Himalaya-Classroom-Block           144     38    106      1165        0         0         0   10:xx
-  KOHLI_GF_WING1_FM-198              143      0    143         0      426         0       426   10:xx
-  KOHLI_2F_WING4_141                 141      0    141         1      526         0       526   10:xx
-  Vindhya_Mock_LSI_130               140      0    140         3      322         0       322   22:xx
-  KOHLI_2F_WING2_139                 138      0    138         0      462         0       462   10:xx
-  Vindhya-Anusaraka                  135      0    135         1      480         0       480   14:xx
-  KOHLI_3F_WING4_146                 132      0    132         1      452         0       452   11:xx
-  HIMALAYA_GF_CR101_147              130      0    130         1      646         0       646   10:xx
-  KOHLI_2F_WING1_138                 126      1    125         0      450         0       450   11:xx
-  Amphi_Theater_10.4.5.100           113      2    111         0      449         0       449   18:xx
-  KOHLI_3F_WING2_143                 112      0    112         0      385         0       385   10:xx
-  Nilgiri-119                        111      3    108         0      188         0       188   11:xx
-  Vindhya_WorkSpace-GF-B6-01         107      0    107         0      402         0       402   14:xx
-  Admin_Block_2nd_Floor              107      0    107         0      386         0       386   16:xx
-  KOHLI_2F_WING3_140                 106      0    106         2      517         0       517   11:xx
-  KOHLI_FF_WING3_136                 104      0    104         1      277         0       277   13:xx
-  KOHLI_GF_WING1_132                 103      0    103         1      264         0       264   11:xx
-  Vindhya_WorkSpace-1F-B6-01         103      0    103         0      392         0       392   15:xx
-  KOHLI_GF_WING4_223                 100      0    100         0      425         0       425   12:xx
-  Vindhya_WorkSpace-GF-B6-02          96      0     96         0      296         0       296   14:xx
-  KOHLI_FF_WING2_135                  94      0     94         0      202         0       202   09:xx
-  KOHLI_FF_WING1_134                  88      0     88         0      224         0       224   14:xx
-  HIMALAYA_GF_CR104_148               86      1     85         0      160         0       160   18:xx
-  Vindhya_SH-2-10.4.5.189             79      0     79         0      269         0       269   17:xx
-  D0:4F:58:4B:33:E1                   79     52     27         0        0         0         0   00:xx
-  KOHLI_3F_WING3_145                  78      0     78         0      176         0       176   15:xx
-  KOHLI_3F_WING1_142                  73      0     73         1      217         0       217   13:xx
-  HIMALAYA_1F_CR201_149               72      1     71         0      161         0       161   14:xx
-  ihub                                71      9     62       443        0         0         0   12:xx
-  Vindhya_WorkSpace-1F-A7             69      0     69         0      186         0       186   14:xx
-  Nilgiri-318-ARL-Lab                 60      2     58         0      204         0       204   12:xx
-  10.4.5.74                           58      1     57         0        0         0         0   13:xx
-  Vindhya_IT_Office_Corridor          54      1     53         0      281         0       281   14:xx
-  Nilgiri_ECE_Lab_113                 52      0     52         0      159         0       159   14:xx
-  Admin_Block_LG_Floor                51      0     51         0      289         0       289   14:xx
-  Nilgiri_ECE_Lab_125                 49      0     49         0      152         0       152   13:xx
-  KOHLI_LGF_Living-Lab                48      1     47         0      239         0       239   16:xx
-  HIMALAYA_1F_CR204_150               48      1     47         0       87         0        87   14:xx
-  HIMALAYA_2F_CR301_156               47      0     47         1      181         0       181   14:xx
-  Guest-House-1F                      40     14     26         0        0         0         0   13:xx
-  Nilgiri_R104                        38     20     18         0        0         0         0   11:xx
-  Nilgiri_Placements_118              37      0     37         0      153         0       153   14:xx
-  Vindhya_EERC                        37      1     36         0      137         0       137   14:xx
-  Vindhya_SH-2-10.4.5.188             33      0     33         0      129         0       129   16:xx
-  Vindhya-EERC-Corridor               32      0     32         0       85         0        85   14:xx
-  HIMALAYA_GF_CR103_206               32      1     31         0       65         0        65   15:xx
-  KOHLI_3F_WING3_173                  29      0     29         0       88         0        88   14:xx
-  HIMALAYA_2F_CR304_157               24      1     23         0       51         0        51   10:xx
-  Vindhya_Innovation_Lab_129          23      0     23         0       85         0        85   13:xx
-  Nilgiri-1F-222                      23      0     23         0       56         0        59   13:xx
-  IIIT-Corp                           21      6     15       116        0         0         0   13:xx
-  KOHLI_3F_WING3_144                  20      0     20         0       24         0        24   14:xx
-  58:B6:33:41:4B:68                   19     15      4         0        0         0         0   16:xx
-  10.4.5.75                           16      1     15         0        0         0         0   14:xx
-  D0:4F:58:4B:33:E0                   16      5     11         0        0         0         0   10:xx
-  B0:A7:B9:9F:10:51                   16      6     10         0        0         0         0   10:xx
-  HIMALAYA_1F_CR203_184               16      0     16         0       28         0        28   15:xx
-  D0:4F:58:4B:33:E2                   15     10      5         0        0         0         0   11:xx
-  Nilgiri-ECE-117                     13     10      3         0        0         0         0   21:xx
-  58:B6:33:01:4B:68                   11      7      4         0        0         0         0   13:xx
-  00:1B:2B:34:EF:D0                   11      9      2         0        0         0         0   17:xx
-  B0:8B:CF:2A:64:20                   10      3      7       186        0         0         0   19:xx
-  FC:5C:45:48:64:58                    9      8      1         0        0         0         0   18:xx
-  Vindhya_B6-309_Class_Room            8      6      2         0        0         0         0   17:xx
-  Vindhya-Satyam-185                   8      0      8         0       68         0        68   10:xx
-  B0:A7:B9:9F:10:50                    8      6      2         0        0         0         0   12:xx
-  9C:53:22:0F:0F:A6                    8      5      3         0        0         0         0   11:xx
-  00:1F:9D:D9:6E:40                    6      5      1         0        0         0         0   00:xx
-  58:B6:33:41:56:28                    6      6      0         0        0         0         0   17:xx
-  B0:4E:26:96:D2:60                    6      2      4         0        0         0         0   03:xx
-  F0:A7:31:59:84:3F                    6      4      2         0        0         0         0   15:xx
-  48:21:0B:46:28:07                    6      3      3         0        0         0         0   13:xx
-  Vindhya_CR1-ClassRoom                5      3      2         0        0         0         0   01:xx
-  5C:62:8B:5E:C5:21                    5      5      0         0        0         0         0   23:xx
-  D0:4F:58:4B:C6:E1                    5      4      1         0        0         0         0   12:xx
-  00:1C:F6:62:9D:B0                    5      1      4         0        0         0         0   10:xx
-  9C:53:22:B2:3F:D4                    5      2      3         0        0         0         0   10:xx
-  C8:A6:08:95:AA:03                    5      4      1         0        0         0         0   16:xx
-  9C:53:22:B2:3F:D6                    5      4      1         0        0         0         0   17:xx
-  30:87:D9:3D:2D:88                    5      5      0         0        0         0         0   16:xx
-  9C:53:22:0F:0F:A5                    5      4      1         0        0         0         0   22:xx
-  58:B6:33:41:73:48                    4      3      1         0        0         0         0   00:xx
-  58:B6:33:01:56:28                    4      4      0         0        0         0         0   12:xx
-  C8:A6:08:55:A0:53                    4      4      0         0        0         0         0   09:xx
-  58:B6:33:81:4B:68                    4      2      2         0        0         0         0   10:xx
-  C8:A6:08:55:A2:9B                    4      1      3         0        0         0         0   10:xx
-  80:E8:6F:D9:BC:60                    4      2      2         0        0         0         0   17:xx
-  58:B6:33:81:5D:08                    4      4      0         0        0         0         0   13:xx
-  F0:A7:31:59:89:A6                    4      2      2         0        0         0         0   13:xx
-  34:F8:E7:17:6E:40                    4      0      4        36        0         0         0   19:xx
-  B0:19:21:2F:B1:09                    4      3      1         0        0         0         0   14:xx
-  6C:DD:30:3F:35:20                    4      1      3        19        0         0         0   19:xx
-  CRC                                  3      1      2         0        0         0         0   13:xx
-  00:1F:9D:D9:58:00                    3      2      1         0        0         0         0   00:xx
-  C8:A6:08:95:AA:0B                    3      0      3         0        0         0         0   12:xx
-  D0:4F:58:51:AC:92                    3      3      0         0        0         0         0   08:xx
-  4A:D5:7A:57:8D:65                    3      1      2         0        0         0         0   10:xx
-  48:22:54:C3:75:23                    3      3      0         0        0         0         0   10:xx
-  80:E8:6F:D9:BC:6F                    3      2      1         0        0         0         0   10:xx
-  C8:A6:08:55:A0:5B                    3      1      2         0        0         0         0   12:xx
-  58:B6:33:81:4E:B8                    3      3      0         0        0         0         0   10:xx
-  6C:DD:30:40:8A:C0                    3      1      2         9        0         0         0   19:xx
-  58:B6:33:40:89:A8                    3      2      1         0        0         0         0   18:xx
-  D0:EC:35:6E:79:20                    3      0      3        11        0         0         0   13:xx
-  00:B6:70:5B:81:60                    3      0      3        26        0         0         0   19:xx
-  58:B6:33:41:5D:08                    3      3      0         0        0         0         0   13:xx
-  Chairman-Guest-House                 2      0      2         0        0         0         0   09:xx
-  Vindhya_B4-301_Class_Room            2      1      1         0        0         0         0   04:xx
-  Vindhya_Engineering_Cellar           2      1      1         0        0         0         0   16:xx
-  58:B6:33:41:39:D8                    2      2      0         0        0         0         0   00:xx
-  B0:A7:B9:9F:1D:C2                    2      0      2         0        0         0         0   16:xx
-  D8:0F:99:1E:65:20                    2      0      2         0        0         0         0   21:xx
-  F0:A7:31:59:89:A7                    2      1      1         0        0         0         0   22:xx
-  58:B6:33:41:4A:E8                    2      2      0         0        0         0         0   08:xx
-  58:B6:33:81:73:48                    2      1      1         0        0         0         0   12:xx
-  58:B6:33:41:5C:48                    2      2      0         0        0         0         0   08:xx
-  58:B6:33:81:50:58                    2      2      0         0        0         0         0   09:xx
-  58:B6:33:41:5D:38                    2      0      2         0        0         0         0   09:xx
-  5E:CD:40:B7:24:3D                    2      1      1         0        0         0         0   10:xx
-  FC:5C:45:C8:60:B8                    2      2      0         0        0         0         0   10:xx
-  58:B6:33:81:56:28                    2      2      0         0        0         0         0   10:xx
-  6C:DD:30:3F:A3:A0                    2      1      1         5        0         0         0   10:xx
-  6C:DD:30:40:8C:40                    2      0      2        10        0         0         0   10:xx
-  E0:0E:DA:7F:F3:30                    2      1      1         5        0         0         0   13:xx
-  58:6C:25:CC:4D:59                    2      1      1         0        0         0         0   10:xx
-  10:F0:68:31:78:08                    2      2      0         0        0         0         0   10:xx
-  00:1F:9D:D9:A3:D0                    2      2      0         0        0         0         0   11:xx
-  58:B6:33:01:50:58                    2      2      0         0        0         0         0   11:xx
-  8E:DA:9F:50:7E:C9                    2      2      0         0        0         0         0   11:xx
-  96:A3:89:32:56:44                    2      1      1         0        0         0         0   11:xx
-  4C:71:0D:65:82:80                    2      0      2         4        0         0         0   11:xx
-  00:B6:70:5B:8B:60                    2      1      1         4        0         0         0   11:xx
-  E0:0E:DA:BD:FD:10                    2      0      2         8        0         0         0   11:xx
-  02:10:A5:F0:1A:96                    2      2      0         0        0         0         0   12:xx
-  F0:A7:31:59:84:3E                    2      1      1         0        0         0         0   12:xx
-  58:B6:33:40:B5:A8                    2      2      0         0        0         0         0   12:xx
-  A0:23:9F:A9:46:40                    2      0      2        10        0         0         0   16:xx
-  00:B6:70:5B:7A:E0                    2      0      2        16        0         0         0   16:xx
-  00:1F:9D:D9:6E:43                    2      2      0         0        0         0         0   12:xx
-  FC:5C:45:48:62:28                    2      2      0         0        0         0         0   12:xx
-  96:05:F7:7A:12:8B                    2      2      0         0        0         0         0   12:xx
-  D0:4F:58:51:AC:94                    2      1      1         0        0         0         0   12:xx
-  54:AF:97:1C:A4:27                    2      1      1         0        0         0         0   13:xx
-  00:1C:F6:60:61:E0                    2      1      1         0        0         0         0   14:xx
-  EA:93:4A:02:42:0D                    2      0      2         0        0         0         0   16:xx
-  10:F0:68:F1:78:08                    2      1      1         0        0         0         0   16:xx
-  EA:F9:95:A9:7C:30                    2      1      1         0        0         0         0   17:xx
-  C0:C7:0A:4F:B1:34                    2      1      1         0        0         0         0   17:xx
-  0A:E7:6E:92:28:0C                    2      1      1         0        0         0         0   19:xx
-  CCNSB                                1      0      1         0        0         0         0   13:xx
-  CR2-FACULTY                          1      0      1         0        0         0         0   06:xx
-  POWER-SYSTEMS                        1      0      1         0        0         0         0   15:xx
-  CogSci_Vindhya_Block                 1      0      1         0        0         0         0   16:xx
-  10:27:F5:EC:50:7A                    1      0      1         0        0         0         0   00:xx
-  E6:0A:F5:D3:D6:7C                    1      1      0         0        0         0         0   00:xx
-  58:B6:33:01:4A:E8                    1      1      0         0        0         0         0   02:xx
-  C0:C7:0A:4F:B5:71                    1      0      1         0        0         0         0   02:xx
-  BC:F4:D4:36:F2:38                    1      0      1         0        0         0         0   05:xx
-  50:91:E3:95:0D:7C                    1      0      1         0        0         0         0   07:xx
-  1A:35:13:13:CE:3B                    1      1      0         0        0         0         0   08:xx
-  58:B6:33:41:4E:B8                    1      1      0         0        0         0         0   08:xx
-  C8:A6:08:55:A2:93                    1      0      1         0        0         0         0   15:xx
-  58:6C:25:CD:91:23                    1      0      1         0        0         0         0   17:xx
-  76:92:EC:22:95:AF                    1      1      0         0        0         0         0   09:xx
-  4A:D5:7A:57:9E:0F                    1      0      1         0        0         0         0   09:xx
-  FC:5C:45:88:60:B8                    1      1      0         0        0         0         0   09:xx
-  18:8B:45:01:80:20                    1      1      0         0        0         0         0   09:xx
-  8E:82:A9:10:13:3D                    1      1      0         0        0         0         0   10:xx
-  B2:08:2E:5C:D6:0D                    1      0      1         0        0         0         0   10:xx
-  02:81:45:8D:A2:5A                    1      1      0         0        0         0         0   10:xx
-  36:98:E7:12:13:C9                    1      0      1         0        0         0         0   10:xx
-  16:17:05:B0:6F:8E                    1      1      0         0        0         0         0   10:xx
-  00:2A:10:09:D9:D0                    1      0      1         2        0         0         0   10:xx
-  02:42:38:A9:D1:25                    1      1      0         0        0         0         0   10:xx
-  D0:03:4B:D7:7F:58                    1      1      0         0        0         0         0   11:xx
-  AA:DB:78:04:CA:20                    1      0      1         0        0         0         0   11:xx
-  2C:D0:2D:39:4A:00                    1      0      1         8        0         0         0   16:xx
-  3C:84:6A:59:E5:F7                    1      1      0         0        0         0         0   11:xx
-  4E:A8:3A:39:B0:09                    1      1      0         0        0         0         0   11:xx
-  DA:4B:62:8A:6F:1F                    1      0      1         0        0         0         0   11:xx
-  0A:1C:1D:50:34:3E                    1      0      1         0        0         0         0   12:xx
-  C8:A6:08:55:A0:57                    1      0      1         0        0         0         0   11:xx
-  5C:62:8B:5E:B8:E2                    1      1      0         0        0         0         0   11:xx
-  9C:05:D6:A5:5B:B0                    1      0      1         0        0         0         0   11:xx
-  34:F8:E7:16:F9:C0                    1      0      1         7        0         0         0   11:xx
-  58:B6:33:41:50:58                    1      1      0         0        0         0         0   11:xx
-  58:B6:33:80:B5:AA                    1      1      0         0        0         0         0   12:xx
-  C8:A6:08:95:AC:D3                    1      1      0         0        0         0         0   12:xx
-  00:1B:2B:34:EF:D4                    1      1      0         0        0         0         0   12:xx
-  EE:37:7B:01:B6:B9                    1      0      1         0        0         0         0   12:xx
-  58:B6:33:00:BF:88                    1      1      0         0        0         0         0   12:xx
-  9C:53:22:0F:0F:73                    1      0      1         0        0         0         0   12:xx
-  58:B6:33:40:BF:88                    1      0      1         0        0         0         0   12:xx
-  3E:07:A2:C0:F8:5A                    1      1      0         0        0         0         0   12:xx
-  E0:0E:DA:B9:94:30                    1      1      0         1        0         0         0   12:xx
-  D0:4F:58:4B:C6:E2                    1      1      0         0        0         0         0   12:xx
-  1A:57:AC:04:48:72                    1      0      1         0        0         0         0   12:xx
-  C8:A6:08:55:A2:90                    1      1      0         0        0         0         0   12:xx
-  58:B6:33:41:4B:28                    1      1      0         0        0         0         0   12:xx
-  E6:51:E3:46:8F:F4                    1      1      0         0        0         0         0   12:xx
-  C0:C7:0A:4F:AC:11                    1      1      0         0        0         0         0   12:xx
-  AA:AE:08:EE:A0:52                    1      1      0         0        0         0         0   13:xx
-  58:B6:33:00:59:B8                    1      1      0         0        0         0         0   13:xx
-  00:1F:9D:D9:A3:D3                    1      1      0         0        0         0         0   13:xx
-  10:F0:68:B1:78:08                    1      0      1         0        0         0         0   13:xx
-  8E:9E:31:70:4B:9D                    1      1      0         0        0         0         0   13:xx
-  1A:9E:05:1E:AA:A6                    1      1      0         0        0         0         0   13:xx
-  6C:DD:30:3F:17:40                    1      1      0         1        0         0         0   13:xx
-  06:BA:8D:23:FA:F6                    1      1      0         0        0         0         0   13:xx
-  B0:A7:B9:9F:1E:F4                    1      1      0         0        0         0         0   13:xx
-  3A:66:D0:68:FF:02                    1      1      0         0        0         0         0   13:xx
-  8A:F4:88:62:DA:23                    1      1      0         0        0         0         0   13:xx
-  FC:5C:45:88:58:F8                    1      1      0         0        0         0         0   13:xx
-  00:1F:9D:D9:69:94                    1      1      0         0        0         0         0   13:xx
-  16:E3:B8:7C:69:DF                    1      1      0         0        0         0         0   13:xx
-  5E:07:E3:F8:B8:B4                    1      0      1         0        0         0         0   14:xx
-  C0:C7:0A:4F:B5:31                    1      1      0         0        0         0         0   14:xx
-  2A:E5:D8:E5:A1:9F                    1      0      1         0        0         0         0   14:xx
-  6E:F6:7A:51:53:32                    1      0      1         0        0         0         0   14:xx
-  00:1F:9D:D9:71:84                    1      1      0         0        0         0         0   14:xx
-  EA:4B:63:64:5C:94                    1      1      0         0        0         0         0   15:xx
-  F2:21:AA:62:E2:34                    1      0      1         0        0         0         0   15:xx
-  C8:A6:08:95:AC:DB                    1      1      0         0        0         0         0   15:xx
-  2C:33:11:CC:4E:10                    1      0      1         2        0         0         0   15:xx
-  3A:04:E0:A2:6C:DA                    1      1      0         0        0         0         0   16:xx
-  DA:CE:F5:86:CA:B4                    1      1      0         0        0         0         0   16:xx
-  58:B6:33:41:58:F8                    1      1      0         0        0         0         0   16:xx
-  58:B6:33:81:4A:E8                    1      1      0         0        0         0         0   16:xx
-  00:1D:46:7C:87:83                    1      0      1         0        0         0         0   16:xx
-  C0:C7:0A:4F:B0:D0                    1      1      0         0        0         0         0   16:xx
-  26:4E:F4:F3:6C:1A                    1      1      0         0        0         0         0   16:xx
-  4C:BC:48:35:95:20                    1      0      1         5        0         0         0   16:xx
-  E0:0E:DA:7F:EE:E0                    1      0      1         5        0         0         0   16:xx
-  6A:81:0D:29:E3:2F                    1      1      0         0        0         0         0   16:xx
-  F2:C5:7C:04:0C:8B                    1      1      0         0        0         0         0   17:xx
-  6A:D3:2D:A8:75:4A                    1      1      0         0        0         0         0   17:xx
-  02:26:61:F9:05:31                    1      1      0         0        0         0         0   17:xx
-  26:84:34:73:40:F0                    1      1      0         0        0         0         0   17:xx
-  7C:21:D8:4B:B9:3C                    1      0      1         0        0         0         0   18:xx
-  42:BC:45:B7:AD:AD                    1      1      0         0        0         0         0   18:xx
-  40:01:7A:53:A1:00                    1      0      1         2        0         0         0   18:xx
-  AE:F6:17:25:24:23                    1      1      0         0        0         0         0   18:xx
-  5A:38:74:29:81:2E                    1      1      0         0        0         0         0   18:xx
-  58:B6:33:01:73:48                    1      0      1         0        0         0         0   19:xx
-  5A:D9:65:AC:65:E4                    1      0      1         0        0         0         0   19:xx
-  48:22:54:C3:75:24                    1      0      1         0        0         0         0   21:xx
-  70:6D:EC:0D:05:72                    1      1      0         0        0         0         0   20:xx
-  6A:15:CB:BA:A8:15                    1      1      0         0        0         0         0   20:xx
-  00:1F:9D:D9:71:83                    1      1      0         0        0         0         0   21:xx
-  58:B6:33:41:57:E8                    1      1      0         0        0         0         0   21:xx
-  DE:97:BA:DD:13:0F                    1      1      0         0        0         0         0   23:xx
+  10.4.5.74                            1      1      0         0        0         0         0   00:xx
+  KOHLI_3F_WING2_143                   1      1      0         1        0         0         1   16:xx
+  Vindhya_External_Canteen             1      1      0         1        0         0         1   16:xx
 
 ────────────────────────────────────────────────────────────────────────
   SSID BREAKDOWN
-────────────────────────────────────────────────────────────────────────
-  SSID                                Clients  APs  Sessions  AuthFail  Single-AP
+────────────────────────────────────────────────────────────────────────  SSID                                Clients  APs  Sessions  AuthFail  Single-AP
   ─────────────────────────────────── ─────── ──── ───────── ───────── ──────────
-  wifi@iiith                              694   69      7073      9323      False
-  eduroam                                 175   69      5725      4093      False
-  IIIT-Guest                              116   65      3381      1878      False
-  Guest@iiith                              53   24       368         1      False
-  Episteme@iiith                           16    8       246       221      False
-  esw-m19@iiith                            13   30        33        31      False
-  IT-Infra@iiith                           10   48       189       162      False
-  viswam@iiith                              3    9        12         3      False
-  DIRECT-BD-HP                              1    2         0         0      False
-  DIR-615                                   1    3         0         0      False
-  Abhinav802                                1    2         0         0      False
-  vivo Y28e 5G                              1    1         0         0       True
-  My_network                                1    2         0         0      False
-  HYLENR LAB                                1    3         0         0      False
-  JioFiber-BMhmL                            1    2         0         0      False
-  ACT101722881248                           1    1         0         0       True
-  Head and Tales Studio                     1    1         0         0       True
-  iphipi                                    1    2         0         0      False
-  MSIT-2024                                 1    2         0         0      False
-  ihub@iiith                                1   10         0         0      False
-  ESP-1D943E                                1    1         0         0       True
-  Arihant's-Desktop                         1    3         0         0      False
-  test-conf                                 1   19         0         0      False
-  vivo 2018                                 1    5         0         0      False
-  Airtel_kaus_4394                          1    2         0         0      False
-  anniewifi                                 1    2         0         0      False
-  TP-Link_9BBB                              1    2         0         0      False
-  HP-Print-21-LaserJet Pro MFP              1    2         0         0      False
-  Vgyan                                     1    3         0         0      False
-  ACT101677037851                           1    2         0         0      False
-  TP-Link_14E9                              1    7         0         0      False
-  TP-Link_BC75                              1    2         0         0      False
-  POCO X7 Pro                               1    1         0         0       True
-  GUESTWIFI                                 1    3         0         0      False
-  wheelchair@rrc                            1    2         0         0      False
-  CIE@IIITH-2.4G                            1    5         0         0      False
-  TP-Link_1DC2                              1    2         0         0      False
-  MSIT-Office                               1    5         0         0      False
-  !nt3rNw!F!                                1    5         0         0      False
-  IHUBDATAIIITH                             1    2         0         0      False
-  D-Link_DIR-600M                           1    5         0         0      False
-  Hylenr admin                              1    1         0         0       True
-  Raycon(98F4AB789B5C)                      1    2         0         0      False
-  Aku Soku Zan                              1    3         0         0      False
-  InternalWifi                              1    3         0         0      False
-  aarg                                      1    2         0         0      False
-  ENMGMT4093BD                              1    3         0         0      False
-  MSIT-Broad-2024                           1    1         0         0       True
-  buddys'                                   1    4         0         0      False
-  Prerna-LabPC                              1    2         0         0      False
-  MSIT-Broad                                1    5         0         0      False
-  JioFi3_259D0E                             1    2         0         0      False
-  HP-Print-83-LaserJet Pro M202dw           1    3         0         0      False
-  moto g34 5G_9896                          1    1         0         0       True
-  Tcsw!5!4smart_D                           1    6         0         0      False
-  DIRECT-6F-HP Smart Tank 580-590           1    1         0         0       True
-  vasudha-OptiPlex-5090                     1    1         0         0       True
-  DIRECT-B0-HP Laser 136nw                  1    1         0         0       True
-  NAAPS2_2GEXT                              1    1         0         0       True
-  Airtel_221b_Bakerstreet                   1    2         0         0      False
-  ck                                        1    2         0         0      False
-  AD's A14                                  1    3         0         0      False
-  TP-Link_540D                              1    2         0         0      False
-  kaiinos_guest                             1    2         0         0      False
-  HLS                                       1    2         0         0      False
-  shiva-Vostro-3670                         1    3         0         0      False
-  mydlink                                   1    4         0         0      False
-  SCRC_LAB_IOT                              1    2         0         0      False
-  TP-Link_A427                              1    1         0         0       True
-  cvest                                     1    1         0         0       True
-  Cos-Link02                                1    1         0         0       True
-  Cos-Link03                                1    2         0         0      False
-  _____                                     1    2         0         0      False
-  TP-Link_2D94                              1    4         0         0      False
-  AKota                                     1    1         0         0       True
-  Anima of Animation                        1    1         0         0       True
-  MIFI_C1A6                                 1    1         0         0       True
-  Vimalsn_5G                                1    1         0         0       True
-  Airtel_abba2.4                            1    2         0         0      False
-  MLR AUTO_2G                               1    2         0         0      False
-  infinos                                   1    1         0         0       True
-  44 49 52 45 43 54 2D 43 31 2D 48 50 20 44 65 73       1    1         0         0       True
-  TSAGS300N                                 1    1         0         0       True
-  pradeep                                   1    2         0         0      False
-  Himanshu_5G                               1    2         0         0      False
-  TP-Link_55C9                              1    2         0         0      False
-  Madner-PC                                 1    3         0         0      False
-  Raycon(98F4AB789D80)                      1    3         0         0      False
-  HP-Print-1C-LaserJet Pro MFP              1    3         0         0      False
-  gvraju                                    1    2         0         0      False
-  Cos-Link04                                1    1         0         0       True
-  rtl@iiith                                 1    4         0         0      False
-  TP-Link_1EF4                              1    2         0         0      False
-  Airtel_9445060066_5GHz                    1    2         0         0      False
-  cometfvr-lab                              1    1         0         0       True
-  Airtel_priyanshu                          1    1         0         0       True
-  vignesh_a54                               1    2         0         0      False
-  HP-Print-88-LaserJet Pro MFP              1    2         0         0      False
-  HP-Print-48-LaserJet Pro MFP              1    1         0         0       True
-  Medeva_5g                                 1    2         0         0      False
-  TP-Link_5470                              1    1         0         0       True
-  ASUS                                      1    3         0         0      False
-  DreamVu-main_2G                           1    2         0         0      False
-  HP-Print-44-LaserJet Pro MFP              1    2         0         0      False
-  Airtel_nand_5868                          1    1         0         0       True
-  Safe                                      1    4         0         0      False
-  Kulkarni 501_EXT                          1    1         0         0       True
-  CMF by Nothing Phone 1_8860               1    1         0         0       True
-  HLO                                       1    1         0         0       True
-  Area-51-2g                                1    2         0         0      False
-  AlgoUniversity                            1    2         0         0      False
-  pradeep-Vostro-3670                       1    2         0         0      False
-  TP-Link_20D1                              1    1         0         0       True
-  mehul-OptiPlex-3000                       1    2         0         0      False
-  onward                                    1    2         0         0      False
-  New@com                                   1    2         0         0      False
-  DIRECT-9F-HP Laser 138fnw                 1    2         0         0      False
-  OneImmersive_Guest                        1    2         0         0      False
-  pranjal-Vostro-3888                       1    2         0         0      False
-  vivo T2x 5G                               1    1         0         0       True
-  Airtel_Oneplus                            1    1         0         0       True
-  seshadri_c_wifi_5                         1    1         0         0       True
-  AiNetwork                                 1    1         0         0       True
-  Medeva                                    1    2         0         0      False
-  ntwist                                    1    2         0         0      False
-  Nilgiri_HubSmallConf                      1    2         0         0      False
-  A_G                                       1    2         0         0      False
-  HP-Print-BB-LaserJet Pro MFP              1    2         0         0      False
-  Rahul-Jio4g                               1    2         0         0      False
-  Himanshu                                  1    2         0         0      False
-  JioAirfiberA6                             1    2         0         0      False
-  TP-Link_507A                              1    3         0         0      False
-  Airtel_prat_4728                          1    2         0         0      False
-  Vyomik                                    1    1         0         0       True
-  ACTFIBERNET                               1    2         0         0      False
-  kk                                        1    1         0         0       True
-  COFE_1E08                                 1    1         0         0       True
-  A4L-23-030C7                              1    1         0         0       True
-  Redmi                                     1    2         0         0      False
-  vivo T3x 5G                               1    1         0         0       True
-  vivo Y75 5G                               1    1         0         0       True
-  DIRECT-FF-HP Laser 136nw                  1    1         0         0       True
-  DIRECT-c7-EPSON-L15150 Series             1    1         0         0       True
-  TP-Link_0EC8                              1    1         0         0       True
-  56 69 72 61 74 E2 80 99 73 20 69 50 68 6F 6E 65       1    4         0         0      False
-  70mai_d06_d96f                            1    1         0         0       True
-  !dw$_Tb_o@&                               1    1         0         0       True
-  ravi-Vostro-3669                          1    2         0         0      False
-  OnePlus NordCE 5G                         1    1         0         0       True
-  Shivank's Galaxy A52                      1    3         0         0      False
-  YESHWANTH                                 1    2         0         0      False
-  JENA SENA                                 1    2         0         0      False
-  Dash-4G                                   1    1         0         0       True
-  Kawshik's M34 5G                          1    1         0         0       True
-  Galaxy M12647B                            1    4         0         0      False
-  Redmi Note 7 Pro                          1    1         0         0       True
-  Pixel_7893                                1    3         0         0      False
-  THOR 3270                                 1    1         0         0       True
-  Galaxy M30FAF6                            1    4         0         0      False
-  DIRECT-                                   1    9         0         0      False
-  Mine                                      1    1         0         0       True
-  GSLehal                                   1    3         0         0      False
-  DIRECT-BF-HP Smart Tank 580-590           1    2         0         0      False
-  Pallavi                                   1    3         0         0      False
-  Lab_33                                    1    2         0         0      False
-  41 72 79 61 6E E2 80 99 73 20 69 50 68 6F 6E 65       1    2         0         0      False
-  SKTA                                      1    1         0         0       True
-  EBDFF944-EA89sIt_b41AOYi                  1    1         0         0       True
-  4A 61 79 61 6E 74 68 E2 80 99 73 20 69 50 68 6F       1    1         0         0       True
-  V Black Beast_30:95:87:D3:8A:78           1    4         0         0      False
-  OnePlus Nord 2T 5G                        1    1         0         0       True
-  Predator-PHN16-71                         1    5         0         0      False
-  Galaxy A13 F031                           1    3         0         0      False
-  DIRECT-DC-HP OfficeJet Pro 9720           1    1         0         0       True
-  AP00011282                                1    6         0         0      False
-  Shhhhhhh...                               1    2         0         0      False
-  Sarvo pixel                               1    2         0         0      False
-  TP-Link_A0A7                              1    2         0         0      False
-  DIRECT-1C-HP Smart Tank 580-590           1    1         0         0       True
-  baleno_14:F5:F9:0A:7A:7F                  1    1         0         0       True
-  Shadow Claw                               1    2         0         0      False
-  HP-Print-51-LaserJet Pro M202dw           1    1         0         0       True
-  Sarvesh                                   1    5         0         0      False
-  Sri                                       1    1         0         0       True
-  iPhone                                    1    2         0         0      False
-  OnePlus Nord CE 2 Lite 5G                 1    4         0         0      False
-  \"*Red_Tiger_Spirit*\                     1    1         0         0       True
-  (0_0)zZ                                   1    1         0         0       True
-  !P@dT($                                   1    1         0         0       True
-  iamarnav08                                1    8         0         0      False
-  Aditya Reddy                              1    1         0         0       True
-  Charan's Pixel                            1    1         0         0       True
-  HP-Print-CF-LaserJet Pro MFP              1    1         0         0       True
-  Vivek                                     1    1         0         0       True
-  DIRECT-LW-1000P                           1    3         0         0      False
-  NR                                        1    2         0         0      False
-  LOKABHIRAM9778                            1    2         0         0      False
-  KAIINOS PRO                               1    2         0         0      False
-  DIRECT-30-HP M427 LaserJet                1    2         0         0      False
-  control@rrc                               1    2         0         0      False
-  vivo Y33T                                 1    1         0         0       True
-  myssid                                    1    1         0         0       True
-  Miami                                     1    1         0         0       True
-  KBRs Mob                                  1    1         0         0       True
-  Galaxy F55                                1    2         0         0      False
-  V2029                                     1    2         0         0      False
-  DIRECT-WD_0a:6a:0a:0a:00:8d               1    2         0         0      False
-  SiriHS                                    1    1         0         0       True
-  Rishi's Galaxy S20 FE                     1    1         0         0       True
-  Arogya-Wi-Fi                              1    1         0         0       True
-  Nikesh nikky                              1    4         0         0      False
-  YCO_A1284E                                1    3         0         0      False
-  TP-Link_0D7C                              1    1         0         0       True
-  Galaxy M11562b                            1    1         0         0       True
-  DIRECT-9E-EPSON-534F6E                    1    2         0         0      False
-  OnePlus Nord CE 2                         1    1         0         0       True
-  Sahasra                                   1    4         0         0      False
-  vivo 1819                                 1    1         0         0       True
-  Galaxy A15                                1    1         0         0       True
-  RPaveri                                   1    4         0         0      False
-  Firearc's Pixel 7a                        1    1         0         0       True
-  DIRECT-pIPAVAN_PARVATAMQQG6               1    1         0         0       True
-  Kamesh                                    1    5         0         0      False
-  Airtel_priy_2307                          1    1         0         0       True
-  POCO X6 Neo 5G                            1    1         0         0       True
-  DIRECT-HD-EPSON-L6460 Series              1    2         0         0      False
-  Sabarish Sanjeevi                         1    1         0         0       True
-  anujv-n13                                 1    1         0         0       True
-  53 61 69 E2 80 99 73 20 69 50 68 6F 6E 65       1    1         0         0       True
-  Buddi                                     1    1         0         0       True
-  Oneplus                                   1    5         0         0      False
-  DIRECT-FXDESKTOP-6VH49JMLfCe              1    1         0         0       True
-  wiif                                      1    1         0         0       True
-  TP-Link_3778                              1    2         0         0      False
-  jai shree ram                             1    1         0         0       True
-  abcd                                      1    1         0         0       True
-  CIE                                       1    4         0         0      False
-  iQOO Z7s 5G                               1    1         0         0       True
-  vivo T1 Pro 5G                            1    2         0         0      False
-  Don't Download                            1    1         0         0       True
-  OnePlus 3T                                1    2         0         0      False
-  Redmi 9                                   1    5         0         0      False
-  SAMSUNG                                   1    1         0         0       True
-  Rohit's A14                               1    1         0         0       True
-  Galaxy F41D595                            1    1         0         0       True
-  Hedwig                                    1    2         0         0      False
-  iPhone (2)                                1    1         0         0       True
-  Hotspot                                   1    5         0         0      False
-  DIRECT-9C-EPSON-98C59D                    1    1         0         0       True
-  53 75 62 62 61 72 61 6A 75 E2 80 99 73 20 69 50       1    1         0         0       True
-  narahari-ICWiBES                          1    1         0         0       True
-  HP-Print-40-LaserJet Pro MFP              1    1         0         0       True
-  Villa 52                                  1    2         0         0      False
-  Chan                                      1    1         0         0       True
-  Vamsha's S24 Ultra                        1    3         0         0      False
-  Hey                                       1    1         0         0       True
-  OPPO F19 Pro+                             1    1         0         0       True
-  iQOO Z9s 5G                               1    2         0         0      False
-  HP=SMB01<D4_4104fdw LJ                    1    1         0         0       True
-  Tharun's S23                              1    2         0         0      False
-  Skynet                                    1    1         0         0       True
-  moto g(60)_9290                           1    3         0         0      False
-  50 72 61 6E 61 79 E2 80 99 73 20 69 50 68 6F 6E       1    1         0         0       True
-  Jeevan's Galaxy A16 5G                    1    2         0         0      False
-  Keerthi                                   1    2         0         0      False
-  Vimalsn_2.4                               1    1         0         0       True
-  Chiranjeevi's A34                         1    1         0         0       True
-  TG5GJio                                   1    1         0         0       True
-  Phone                                     1    1         0         0       True
-  NK PATEL                                  1    2         0         0      False
-  Sai Charan's F54                          1    2         0         0      False
-  HP-Print-38-LaserJet Pro MFP              1    2         0         0      False
-  AndroidAPD35D                             1    1         0         0       True
-  COFE_B748                                 1    1         0         0       True
-  narzo 50A                                 1    2         0         0      False
-  Airtel_9445060066                         1    2         0         0      False
-  Moto 50 edge pro                          1    2         0         0      False
-  ashutosh-Vostro-3888                      1    2         0         0      False
-  Kartik                                    1    1         0         0       True
-  OnePlus                                   1    2         0         0      False
-  AndroidAP_1188                            1    1         0         0       True
-  Hylenr Conference Room                    1    1         0         0       True
-  DreamVu-main_5G                           1    1         0         0       True
-  Kumar moto g52                            1    1         0         0       True
-  DIRECT-ADSUPRIYAEPHs                      1    1         0         0       True
-  TP-Link_569B                              1    2         0         0      False
-  Gopal                                     1    1         0         0       True
-  Hem                                       1    2         0         0      False
-  Shruti                                    1    4         0         0      False
-  ananya-OptiPlex-5090                      1    2         0         0      False
-  VamsiA50                                  1    1         0         0       True
-  project24                                 1    3         0         0      False
-  skdb s20                                  1    1         0         0       True
-  RUT_D8B8_5G                               1    2         0         0      False
-  DIRECT-OIDESKTOP-LGRA1VJmsyg              1    1         0         0       True
-  Nhi Dunga, Jio Chala                      1    1         0         0       True
-  DIRECT-5B-HP Laser 178nw                  1    2         0         0      False
-  Dindu Galaxy                              1    2         0         0      False
-  iQOO Z9s                                  1    1         0         0       True
-  4G-UFI-6D7D                               1    1         0         0       True
-  Rad WiFi                                  1    2         0         0      False
-  CIE@IIITH                                 1    8         0         0      False
-  simple                                    1    2         0         0      False
-  ACTFIBERNET_5G                            1    1         0         0       True
-  AI PLANET_5G                              1    1         0         0       True
-  JioFi3_1E6520                             1    2         0         0      False
-  Durga                                     1    3         0         0      False
-  AI PLANET                                 1    1         0         0       True
-  DIRECT-aJDESKTOP-9EU23BJQJXD              1    1         0         0       True
-  Spoorthi5                                 1    1         0         0       True
-  Galaxy S20 FE 5G D4C6                     1    2         0         0      False
-  redmi8                                    1    1         0         0       True
-  DIRECT-CVLAPTOP-GU7GCMK6AUC0              1    1         0         0       True
-  OnePlus Nord CE 3 Lite 5G                 1    1         0         0       True
-  SCRC_Lab_3                                1    1         0         0       True
-  A71                                       1    1         0         0       True
-  disconnected                              1    1         0         0       True
-  HP /123                                   1    1         0         0       True
-  Pro Hombres                               1    1         0         0       True
-  Redmi Note 13 5G                          1    2         0         0      False
-  Redmi Note 9 Pro                          1    1         0         0       True
-  swetha                                    1    2         0         0      False
-  Veda                                      1    1         0         0       True
-  TP-Link_75AC                              1    2         0         0      False
-  Shaikali                                  1    1         0         0       True
-  realme 13 Pro+ 5G                         1    1         0         0       True
-  Pooja's Galaxy A73 5G                     1    2         0         0      False
-  Mehul's S24 FE                            1    2         0         0      False
-  OnePlus 11R 5G                            1    1         0         0       True
-  vivo V27                                  1    1         0         0       True
-  Allika                                    1    1         0         0       True
-  Redmi Note 12 Pro                         1    1         0         0       True
-  S23                                       1    1         0         0       True
-  POCO M2 Pro                               1    1         0         0       True
-  DIRECT-LASOHAMV-L2PUVP                    1    1         0         0       True
-  Dark                                      1    1         0         0       True
-  41 6E 6A 61 6C 69 E2 80 99 73 20 69 50 68 6F 6E       1    2         0         0      False
-  Light-Dimmer Fallback Hotspot             1    1         0         0       True
-  moto g54 5G_3047                          1    1         0         0       True
-  Justin                                    1    1         0         0       True
-  OnePlus 7T                                1    2         0         0      False
-  vivo T4x 5G                               1    1         0         0       True
-  Shree's Galaxy A23 5G                     1    2         0         0      False
-  saurabh-Vostro-3888                       1    1         0         0       True
-  Nord_CE                                   1    1         0         0       True
-  R15-FB10                                  1    1         0         0       True
-  Galaxy A122EDB                            1    1         0         0       True
-  WLED-AP                                   1    1         0         0       True
-  acer                                      1    1         0         0       True
-  vishal                                    1    2         0         0      False
-  ULTRA_800_B93C                            1    5         0         0      False
-  G2199                                     1    1         0         0       True
-  Azeem                                     1    1         0         0       True
-  realme narzo 30 5G                        1    1         0         0       True
-  DeepAlgorithms wifi                       1    2         0         0      False
-  imran                                     1    2         0         0      False
-  POCO F5                                   1    1         0         0       True
-  ACT101669021703                           1    1         0         0       True
-  Redmi 12 5G                               1    1         0         0       True
-  Galaxy S21 FE 5G b733                     1    1         0         0       True
-  Nothing 1                                 1    1         0         0       True
-  HP-Print-20-LaserJet Pro M202dw           1    1         0         0       True
-  4E 61 72 65 6E E2 80 99 73 20 69 50 68 6F 6E 65       1    3         0         0      False
-  Xiaomi 14 Civi                            1    1         0         0       True
+  IIIT-Guest                                1    1         1         1       True
+  eduroam                                   1    1         1         1       True
 
 ────────────────────────────────────────────────────────────────────────
   CLIENT SESSIONS (top 20 by session count)
-────────────────────────────────────────────────────────────────────────
-  MAC                   Sess    TotTime       Avg     Min     Max  <30s  <5s  Roams  AuthF  OffHr
+────────────────────────────────────────────────────────────────────────  MAC                   Sess    TotTime       Avg     Min     Max  <30s  <5s  Roams  AuthF  OffHr
   ──────────────────── ───── ────────── ───────── ─────── ─────── ───── ──── ────── ────── ──────
-  56:FF:C1:19:EB:2D      205        43s        0s      0s     26s   205  204      0    312      0
-  76:B4:17:11:92:7C      202         9s        0s      0s      1s   202  202      0    202     14
-  F6:83:3B:85:FD:AB      171        12s        0s      0s      2s   171  171      0    180      0
-  3A:5A:82:DC:0A:21      168        22s        0s      0s      2s   168  168      7    168      0
-  4E:BD:C6:BF:97:82      157        24s        0s      0s      3s   157  157      5    157      0
-  6A:ED:14:39:16:29      136     4m 39s        2s      0s  3m 24s   134  132      1    220      1
-  1E:D4:79:FD:FD:EF      135        11s        0s      0s      3s   135  135      7    135      0
-  96:2C:27:6E:C5:A6      104        19s        0s      0s      6s   104  103      0    122      6
-  F6:F1:C8:D8:F8:45      101         6s        0s      0s      3s   101  101      2    101      0
-  4E:D0:D8:4B:DD:05      100         9s        0s      0s      2s   100  100      0    103      0
-  5A:A8:05:A8:1B:E1       99         8s        0s      0s      3s    99   99      0     99      1
-  EC:5C:68:58:6E:65       99         5s        0s      0s      2s    99   99      0    100      7
-  EA:0D:98:79:D7:23       87 1h 13m 46s       50s      0s 1h 12m 37s    85   84      0    124     73
-  12:61:11:E3:BF:63       87        17s        0s      0s      3s    87   87      2     91      0
-  1E:E6:5C:E7:5E:49       86        25s        0s      0s      4s    86   86      2     86      0
-  8E:A1:A1:96:E5:D3       86         4s        0s      0s      3s    86   86      0     93      0
-  D8:80:83:7F:D0:4D       84         4s        0s      0s      1s    84   84      0     93     58
-  74:F2:FA:4A:FC:33       76         4s        0s      0s      1s    76   76      1     89      6
-  74:BE:F3:7B:18:CD       71         3s        0s      0s      1s    71   71      1     71      0
-  1A:C3:7E:06:B2:4A       69        14s        0s      0s      2s    69   69      6     69      0
+  12:7E:CC:DB:9E:5C        1         0s        0s      0s      0s     1    1      0      1      0
+  0E:91:97:62:EE:DF        1         0s        0s      0s      0s     1    1      0      1      0
+  00:81:C4:90:F2:80        0        N/A       N/A     N/A     N/A     0    0      0      0      0
 
 ────────────────────────────────────────────────────────────────────────
   AUTH FAILURE ANALYSIS
-────────────────────────────────────────────────────────────────────────
-  By client (top 15):
-    56:FF:C1:19:EB:2D      312 failures     0 successes  [never succeeded]
-    6A:ED:14:39:16:29      220 failures     0 successes  [never succeeded]
-    76:B4:17:11:92:7C      202 failures     0 successes  [never succeeded]
-    F6:83:3B:85:FD:AB      180 failures     0 successes  [never succeeded]
-    3A:5A:82:DC:0A:21      168 failures     0 successes  [never succeeded]
-    12:80:B0:62:3C:F9      162 failures     0 successes  [never succeeded]
-    4E:BD:C6:BF:97:82      157 failures     0 successes  [never succeeded]
-    1E:D4:79:FD:FD:EF      135 failures     0 successes  [never succeeded]
-    2C:0D:A7:F5:09:15      130 failures     0 successes  [never succeeded]
-    EA:0D:98:79:D7:23      124 failures     0 successes  [never succeeded]
-    96:2C:27:6E:C5:A6      122 failures     0 successes  [never succeeded]
-    A6:60:E6:82:43:FB      119 failures     0 successes  [never succeeded]
-    1A:C1:32:DF:68:B6      116 failures     0 successes  [never succeeded]
-    F2:CD:44:8B:31:F4      106 failures     0 successes  [never succeeded]
-    AE:D1:0F:BB:93:56      104 failures     0 successes  [never succeeded]
+────────────────────────────────────────────────────────────────────────  By client (top 15):
+    0E:91:97:62:EE:DF        1 failures     0 successes  [never succeeded]
+    12:7E:CC:DB:9E:5C        1 failures     0 successes  [never succeeded]
+    00:81:C4:90:F2:80        0 failures     0 successes  [never succeeded]
 
   By AP (top 10):
-    Vindhya_External_Canteen        1086 failures
-    Admin_Block_UG_Floor             843 failures
-    KOHLI_FF_WING4_137               763 failures
-    Admin_Block_1st_Floor            675 failures
-    HIMALAYA_GF_CR101_147            646 failures
-    KOHLI_2F_WING4_141               526 failures
-    KOHLI_2F_WING3_140               517 failures
-    Vindhya-Anusaraka                480 failures
-    KOHLI_2F_WING2_139               462 failures
-    KOHLI_3F_WING4_146               452 failures
+    KOHLI_3F_WING2_143                 1 failures
+    Vindhya_External_Canteen           1 failures
+    10.4.5.74                          0 failures
 
   By SSID:
-    wifi@iiith                           9323 failures
-    eduroam                              4093 failures
-    IIIT-Guest                           1878 failures
-    Episteme@iiith                        221 failures
-    IT-Infra@iiith                        162 failures
-    esw-m19@iiith                          31 failures
-    Unknown                                 3 failures
-    viswam@iiith                            3 failures
-    Guest@iiith                             1 failures
+    IIIT-Guest                              1 failures
+    eduroam                                 1 failures
 
 ────────────────────────────────────────────────────────────────────────
   DEAUTH / DISASSOC BURST WINDOWS (every window with ≥3 events in 60 s)
-────────────────────────────────────────────────────────────────────────
-  AP                             Window start              Count   Duration
-  ────────────────────────────── ──────────────────────── ────── ──────────
-  KOHLI_2F_WING2_139             2025-05-21T10:49:43          35      1m 0s
-  KOHLI_2F_WING2_139             2025-05-21T10:49:44          35      1m 0s
-  KOHLI_2F_WING2_139             2025-05-21T10:49:45          35      1m 0s
-  KOHLI_2F_WING2_139             2025-05-21T10:49:48          34        57s
-  KOHLI_2F_WING2_139             2025-05-21T10:49:54          33      1m 0s
-  KOHLI_2F_WING2_139             2025-05-21T10:49:56          33      1m 0s
-  KOHLI_2F_WING2_139             2025-05-21T10:49:59          33        58s
-  KOHLI_2F_WING2_139             2025-05-21T10:49:49          32        56s
-  KOHLI_2F_WING2_139             2025-05-21T10:49:50          32      1m 0s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:00          32        57s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:01          31        56s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:02          30        55s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:05          29        52s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:06          28        51s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:07          27        50s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:08          26        49s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:13          25        44s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:14          24        43s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:18          23        39s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:19          22        38s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:20          21        37s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:24          20        33s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:26          19        31s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:29          18        28s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:30          17        27s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:31          16        26s
-  Vindhya_External_Canteen       2025-05-21T15:39:49          14      1m 0s
-  KOHLI_2F_WING2_139             2025-05-21T10:50:32          13        25s
-  Vindhya_External_Canteen       2025-05-21T15:39:24          12        57s
-  Vindhya_External_Canteen       2025-05-21T15:39:33          12        58s
+────────────────────────────────────────────────────────────────────────  None detected.
 
 ────────────────────────────────────────────────────────────────────────
   ROAMING
-────────────────────────────────────────────────────────────────────────
-  Total transitions   : 842
-  Clients that roamed : 140
+────────────────────────────────────────────────────────────────────────  Total transitions   : 0
+  Clients that roamed : 0
 
   Top roamers:
-    DC:21:5C:6D:F7:A9     119 roams  APs: ['7C:21:D8:4B:B9:3C', 'Academic', 'B0:8B:CF:2A:64:20', '34:F8:E7:17:6E:40', '00:B6:70:5B:81:60', '6C:DD:30:40:8A:C0', 'Vindhya_External_Canteen', 'Vindhya_WorkSpace-1F-B6-01']
-    C8:89:F3:E0:E9:91      71 roams  APs: ['event', 'IASNLP']
-    52:02:02:20:80:41      70 roams  APs: ['IASNLP', 'Academic', 'event']
-    E2:7F:E5:47:A3:A7      45 roams  APs: ['Academic', '6C:DD:30:3F:35:20', 'B0:8B:CF:2A:64:20', '40:01:7A:53:A1:00', 'default-group', 'event']
-    C6:C7:C1:C0:D6:8D      37 roams  APs: ['default-group', 'event', 'Academic', 'D0:EC:35:6E:79:20', '00:B6:70:5B:7A:E0', 'A0:23:9F:A9:46:40', 'E0:0E:DA:7F:EE:E0']
-    09:09:201:03:08:00     36 roams  APs: ['KOHLI_FF_WING3_136', 'Vindhya_WorkSpace-GF-B6-01', 'KOHLI_GF_WING4_223', 'Nilgiri-1F-222', 'Vindhya-Anusaraka']
-    40:C7:11:AE:9F:37      35 roams  APs: ['Academic', 'event', 'default-group']
-    8E:8F:66:96:AD:4F      32 roams  APs: ['Academic', '6C:DD:30:3F:A3:A0', '6C:DD:30:40:8C:40', 'event', 'default-group', 'KOHLI_LGF_Living-Lab', 'E0:0E:DA:B9:94:30', 'A0:23:9F:A9:46:40', '6C:DD:30:3F:17:40', 'B0:8B:CF:2A:64:20', 'D0:EC:35:6E:79:20', 'E0:0E:DA:7F:F3:30']
-    5C:1C:B9:93:78:13      23 roams  APs: ['Academic', 'B0:8B:CF:2A:64:20', '34:F8:E7:17:6E:40', '00:B6:70:5B:81:60']
-    32:9D:7E:CC:07:DA      22 roams  APs: ['event', 'Academic', '2C:D0:2D:39:4A:00', '4C:71:0D:65:82:80', '6C:DD:30:3F:35:20', '4C:BC:48:35:95:20']
 
   Most common AP-to-AP transitions:
-    event  →  IASNLP  (84×)
-    IASNLP  →  event  (79×)
-    Academic  →  B0:8B:CF:2A:64:20  (63×)
-    B0:8B:CF:2A:64:20  →  Academic  (61×)
-    event  →  Academic  (60×)
-    Academic  →  event  (53×)
-    default-group  →  Academic  (49×)
-    Academic  →  default-group  (47×)
-    Academic  →  IASNLP  (25×)
-    IASNLP  →  Academic  (17×)
 
 ────────────────────────────────────────────────────────────────────────
   TEMPORAL PATTERN — events per hour
-────────────────────────────────────────────────────────────────────────
-  00:xx   1898  █████████  [off-hours]
-  01:xx   1357  ██████  [off-hours]
-  02:xx   1308  ██████  [off-hours]
-  03:xx   1163  █████  [off-hours]
-  04:xx   1085  █████  [off-hours]
-  05:xx   1138  █████  [off-hours]
-  06:xx   1354  ██████  [off-hours]
-  07:xx   1515  ███████  [off-hours]
-  08:xx   2346  ███████████
-  09:xx   4073  ████████████████████
-  10:xx   6931  ██████████████████████████████████
-  11:xx   6616  ████████████████████████████████
-  12:xx   6642  ████████████████████████████████
-  13:xx   7170  ███████████████████████████████████
-  14:xx   8071  ████████████████████████████████████████
-  15:xx   6867  ██████████████████████████████████
-  16:xx   6492  ████████████████████████████████
-  17:xx   5833  ████████████████████████████
-  18:xx   5000  ████████████████████████
-  19:xx   3207  ███████████████
-  20:xx   2713  █████████████  [off-hours]
-  21:xx   2211  ██████████  [off-hours]
-  22:xx   2108  ██████████  [off-hours]
-  23:xx   2378  ███████████  [off-hours]
+────────────────────────────────────────────────────────────────────────  00:xx      2  ████████████████████████████████████████  [off-hours]
+  01:xx      0    [off-hours]
+  02:xx      0    [off-hours]
+  03:xx      0    [off-hours]
+  04:xx      0    [off-hours]
+  05:xx      0    [off-hours]
+  06:xx      0    [off-hours]
+  07:xx      0    [off-hours]
+  08:xx      0  
+  09:xx      0  
+  10:xx      0  
+  11:xx      0  
+  12:xx      0  
+  13:xx      0  
+  14:xx      0  
+  15:xx      0  
+  16:xx      2  ████████████████████████████████████████
+  17:xx      0  
+  18:xx      0  
+  19:xx      0  
+  20:xx      0    [off-hours]
+  21:xx      0    [off-hours]
+  22:xx      0    [off-hours]
+  23:xx      0    [off-hours]
 
 ────────────────────────────────────────────────────────────────────────
   TEMPORAL PATTERN — events by weekday
-────────────────────────────────────────────────────────────────────────
-  Monday           0
+────────────────────────────────────────────────────────────────────────  Monday           0
   Tuesday          0
-  Wednesday    89472
-  Thursday         4
-  Friday           0
+  Wednesday        0
+  Thursday         0
+  Friday           4
   Saturday         0
   Sunday           0
 
 ────────────────────────────────────────────────────────────────────────
   TOP 5-MINUTE BURST WINDOWS
-────────────────────────────────────────────────────────────────────────
-  2025-05-21 14:00     840 events
-  2025-05-21 11:00     809 events
-  2025-05-21 14:10     804 events
-  2025-05-21 12:40     770 events
-  2025-05-21 10:50     769 events
-  2025-05-21 14:05     767 events
-  2025-05-21 10:45     765 events
-  2025-05-21 11:05     749 events
-  2025-05-21 13:00     747 events
-  2025-05-21 15:15     736 events
+────────────────────────────────────────────────────────────────────────  2026-03-20 00:00       2 events
+  2026-03-20 16:10       2 events
 
 ────────────────────────────────────────────────────────────────────────
   OFF-HOURS ACTIVITY
-────────────────────────────────────────────────────────────────────────
-  Total events   : 20228
-  Unique devices : 432
+────────────────────────────────────────────────────────────────────────  Total events   : 2
+  Unique devices : 1
 
   Per-device:
-    09:09:201:03:02:00    3987 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['Admin_Block_1st_Floor', 'Admin_Block_2nd_Floor', 'Amphi_Theater_10.4.5.100', 'CCNSB', 'CR2-FACULTY', 'CRC', 'Chairman-Guest-House', 'CogSci_Vindhya_Block', 'Guest-House-1F', 'HIMALAYA_1F_CR203_184', 'HIMALAYA_1F_CR204_150', 'HIMALAYA_2F_CR301_156', 'HIMALAYA_2F_CR304_157', 'HIMALAYA_GF_CR103_206', 'HIMALAYA_GF_CR104_148', 'KOHLI_2F_WING1_138', 'KOHLI_2F_WING2_139', 'KOHLI_2F_WING3_140', 'KOHLI_3F_WING1_142', 'KOHLI_3F_WING2_143', 'KOHLI_3F_WING3_144', 'KOHLI_3F_WING3_145', 'KOHLI_3F_WING3_173', 'KOHLI_3F_WING4_146', 'KOHLI_FF_WING1_134', 'KOHLI_FF_WING2_135', 'KOHLI_GF_WING1_FM-198', 'KOHLI_GF_WING4_223', 'Kohli_GF_Poster-Room', 'Nilgiri-119', 'Nilgiri-1F-222', 'Nilgiri-318-ARL-Lab', 'Nilgiri_ECE_Lab_113', 'Nilgiri_ECE_Lab_125', 'Nilgiri_Placements_118', 'Nilgiri_R104', 'POWER-SYSTEMS', 'Vindhya-Anusaraka', 'Vindhya-EERC-Corridor', 'Vindhya-Satyam-185', 'Vindhya_B4-301_Class_Room', 'Vindhya_B6-309_Class_Room', 'Vindhya_CR1-ClassRoom', 'Vindhya_EERC', 'Vindhya_Engineering_Cellar', 'Vindhya_External_Canteen', 'Vindhya_IT_Office_Corridor', 'Vindhya_Innovation_Lab_129', 'Vindhya_Mock_LSI_130', 'Vindhya_SH-2-10.4.5.188', 'Vindhya_SH-2-10.4.5.189', 'Vindhya_WorkSpace-1F-A7', 'Vindhya_WorkSpace-1F-B6-01', 'Vindhya_WorkSpace-GF-B6-01', 'Vindhya_WorkSpace-GF-B6-02']
-    EA:0D:98:79:D7:23      367 events  hours: [0, 2, 3, 5, 6, 7, 20, 21, 23]  APs: ['Academic', 'Admin_Block_1st_Floor', 'Admin_Block_2nd_Floor', 'Admin_Block_UG_Floor', 'Amphi_Theater_10.4.5.100', 'IASNLP', 'KOHLI_2F_WING1_138', 'KOHLI_2F_WING2_139', 'KOHLI_2F_WING3_140', 'KOHLI_2F_WING4_141', 'KOHLI_3F_WING1_142', 'KOHLI_3F_WING3_145', 'Vindhya_Mock_LSI_130', 'default-group', 'event']
-    D8:80:83:7F:D0:4D      246 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 21]  APs: ['IASNLP', 'KOHLI_2F_WING3_140', 'KOHLI_FF_WING3_136', 'event']
-    01:02:01:01:04:00      186 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['KOHLI_2F_WING1_138', 'KOHLI_2F_WING4_141', 'KOHLI_3F_WING1_142', 'KOHLI_GF_WING1_132', 'KOHLI_LGF_Living-Lab', 'Vindhya_External_Canteen', 'Vindhya_Mock_LSI_130']
-    58:6C:25:C5:1B:7E      158 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['event']
-    E0:0E:DA:B9:93:90      153 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['10.4.5.74']
-    76:FD:2D:D9:65:6D      150 events  hours: [5, 7, 20, 21, 22]  APs: ['Academic', 'Amphi_Theater_10.4.5.100', 'IASNLP', 'Kohli_GF_Poster-Room', 'Nilgiri-119', 'Nilgiri_R104', 'Vindhya_Mock_LSI_130', 'Vindhya_SH-2-10.4.5.189', 'event']
-    00:3A:7D:75:04:10      146 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['10.4.5.74']
-    12:80:B0:62:3C:F9      135 events  hours: [3, 22, 23]  APs: ['Academic', 'Admin_Block_1st_Floor', 'Admin_Block_2nd_Floor', 'Admin_Block_UG_Floor', 'HIMALAYA_1F_CR201_149', 'HIMALAYA_GF_CR101_147', 'HIMALAYA_GF_CR103_206', 'HIMALAYA_GF_CR104_148', 'Himalaya-Classroom-Block', 'KOHLI_2F_WING1_138', 'KOHLI_2F_WING2_139', 'KOHLI_2F_WING3_140', 'KOHLI_2F_WING4_141', 'KOHLI_3F_WING1_142', 'KOHLI_3F_WING3_145', 'KOHLI_3F_WING4_146', 'KOHLI_FF_WING1_134', 'KOHLI_FF_WING2_135', 'KOHLI_FF_WING4_137', 'KOHLI_GF_WING4_223', 'Kohli_GF_Poster-Room', 'Vindhya_External_Canteen', 'Vindhya_Mock_LSI_130']
-    06:5E:87:61:ED:31      131 events  hours: [0, 1, 2, 3, 20, 23]  APs: ['Admin_Block_UG_Floor', 'KOHLI_2F_WING1_138', 'KOHLI_2F_WING2_139', 'KOHLI_2F_WING3_140', 'KOHLI_2F_WING4_141', 'KOHLI_3F_WING2_143', 'KOHLI_3F_WING3_145', 'KOHLI_FF_WING2_135', 'KOHLI_FF_WING4_137']
-    4E:27:5D:AE:AB:0E      130 events  hours: [0, 2, 3, 5, 6, 7, 21, 23]  APs: ['58:B6:33:01:4B:68', 'Academic', 'Admin_Block_1st_Floor', 'Admin_Block_UG_Floor', 'D0:4F:58:4B:33:E0', 'KOHLI_GF_WING1_FM-198', 'Kohli_GF_Poster-Room', 'Nilgiri-119', 'Nilgiri_ECE_Lab_125', 'Vindhya-Anusaraka', 'Vindhya_External_Canteen', 'Vindhya_WorkSpace-1F-A7', 'Vindhya_WorkSpace-1F-B6-01', 'Vindhya_WorkSpace-GF-B6-01', 'Vindhya_WorkSpace-GF-B6-02', 'default-group', 'event']
-    3E:D7:F5:86:5F:3D      129 events  hours: [0, 1, 2, 3, 5, 6, 7, 20, 21, 23]  APs: ['58:B6:33:01:4A:E8', 'Academic', 'D0:4F:58:4B:33:E0', 'HIMALAYA_1F_CR201_149', 'HIMALAYA_2F_CR301_156', 'HIMALAYA_GF_CR101_147', 'HIMALAYA_GF_CR103_206', 'HIMALAYA_GF_CR104_148', 'Himalaya-Classroom-Block', 'IASNLP', 'KOHLI_3F_WING3_173', 'KOHLI_FF_WING2_135', 'Kohli_GF_Poster-Room', 'Vindhya-Anusaraka', 'Vindhya-EERC-Corridor', 'Vindhya_IT_Office_Corridor', 'Vindhya_WorkSpace-1F-B6-01', 'default-group']
-    00:2A:10:09:D9:D0      128 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['10.4.5.74']
-    82:65:1E:32:B7:62      128 events  hours: [20, 21, 23]  APs: ['Academic', 'Admin_Block_1st_Floor', 'Admin_Block_2nd_Floor', 'Admin_Block_UG_Floor', 'IASNLP', 'KOHLI_2F_WING1_138', 'KOHLI_2F_WING2_139', 'KOHLI_2F_WING4_141', 'KOHLI_3F_WING2_143', 'KOHLI_3F_WING3_145', 'KOHLI_FF_WING1_134', 'KOHLI_FF_WING2_135', 'KOHLI_FF_WING3_136', 'KOHLI_FF_WING4_137', 'KOHLI_GF_WING1_132', 'Kohli_GF_Poster-Room', 'Vindhya_Mock_LSI_130', 'event']
-    2C:0D:A7:F5:09:15      116 events  hours: [0, 1, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['Nilgiri-1F-222', 'Nilgiri_ECE_Lab_113', 'Nilgiri_ECE_Lab_125', 'Nilgiri_Placements_118', 'event']
-    2C:33:11:89:CB:30      111 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['10.4.5.74']
-    2C:33:11:FD:46:E0      109 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['10.4.5.74']
-    26:82:48:55:50:CC      109 events  hours: [0, 1, 20, 21, 23]  APs: ['Admin_Block_UG_Floor', 'HIMALAYA_1F_CR201_149', 'HIMALAYA_1F_CR204_150', 'IASNLP', 'KOHLI_2F_WING1_138', 'KOHLI_2F_WING3_140', 'KOHLI_2F_WING4_141', 'KOHLI_3F_WING1_142', 'KOHLI_3F_WING2_143', 'KOHLI_3F_WING3_145', 'KOHLI_3F_WING4_146', 'KOHLI_FF_WING2_135', 'KOHLI_FF_WING3_136', 'KOHLI_GF_WING1_FM-198', 'Nilgiri_Placements_118', 'Vindhya_Mock_LSI_130']
-    00:81:C4:E6:F9:40      102 events  hours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]  APs: ['10.4.5.74']
-    46:D7:BF:74:37:29       99 events  hours: [20, 21, 22, 23]  APs: ['Academic', 'Admin_Block_1st_Floor', 'D0:4F:58:4B:33:E0', 'IASNLP', 'KOHLI_2F_WING2_139', 'KOHLI_FF_WING1_134', 'KOHLI_GF_WING1_132', 'KOHLI_GF_WING1_FM-198', 'Kohli_GF_Poster-Room', 'Vindhya_Mock_LSI_130', 'Vindhya_WorkSpace-1F-A7', 'Vindhya_WorkSpace-GF-B6-01', 'default-group', 'event']
+    00:81:C4:90:F2:80        1 events  hours: [0]  APs: ['10.4.5.74']
 
 ────────────────────────────────────────────────────────────────────────
   CLIENTS ON MULTIPLE SSIDs
-────────────────────────────────────────────────────────────────────────
-  09:09:201:03:02:00    364 SSIDs: ['!P@dT($', '!dw$_Tb_o@&', '!nt3rNw!F!', '(0_0)zZ', '41 6E 6A 61 6C 69 E2 80 99 73 20 69 50 68 6F 6E', '41 72 79 61 6E E2 80 99 73 20 69 50 68 6F 6E 65', '44 49 52 45 43 54 2D 43 31 2D 48 50 20 44 65 73', '4A 61 79 61 6E 74 68 E2 80 99 73 20 69 50 68 6F', '4E 61 72 65 6E E2 80 99 73 20 69 50 68 6F 6E 65', '4G-UFI-6D7D', '50 72 61 6E 61 79 E2 80 99 73 20 69 50 68 6F 6E', '53 61 69 E2 80 99 73 20 69 50 68 6F 6E 65', '53 75 62 62 61 72 61 6A 75 E2 80 99 73 20 69 50', '56 69 72 61 74 E2 80 99 73 20 69 50 68 6F 6E 65', '70mai_d06_d96f', 'A4L-23-030C7', 'A71', 'ACT101669021703', 'ACT101677037851', 'ACT101722881248', 'ACTFIBERNET', 'ACTFIBERNET_5G', "AD's A14", 'AI PLANET', 'AI PLANET_5G', 'AKota', 'AP00011282', 'ASUS', 'A_G', 'Abhinav802', 'Aditya Reddy ', 'AiNetwork', 'Airtel_221b_Bakerstreet', 'Airtel_9445060066', 'Airtel_9445060066_5GHz', 'Airtel_Oneplus', 'Airtel_abba2.4', 'Airtel_kaus_4394', 'Airtel_nand_5868', 'Airtel_prat_4728', 'Airtel_priy_2307', 'Airtel_priyanshu', 'Aku Soku Zan', 'AlgoUniversity', 'Allika', 'AndroidAPD35D', 'AndroidAP_1188', 'Anima of Animation', 'Area-51-2g', "Arihant's-Desktop", 'Arogya-Wi-Fi', 'Azeem', 'Buddi', 'CIE', 'CIE@IIITH', 'CIE@IIITH-2.4G', 'CMF by Nothing Phone 1_8860', 'COFE_1E08', 'COFE_B748', 'Chan', "Charan's Pixel ", "Chiranjeevi's A34", 'Cos-Link02', 'Cos-Link03', 'Cos-Link04', 'D-Link_DIR-600M', 'DIR-615', 'DIRECT-', 'DIRECT-1C-HP Smart Tank 580-590', 'DIRECT-30-HP M427 LaserJet', 'DIRECT-5B-HP Laser 178nw', 'DIRECT-6F-HP Smart Tank 580-590', 'DIRECT-9C-EPSON-98C59D', 'DIRECT-9E-EPSON-534F6E', 'DIRECT-9F-HP Laser 138fnw', 'DIRECT-ADSUPRIYAEPHs', 'DIRECT-B0-HP Laser 136nw', 'DIRECT-BD-HP ', 'DIRECT-BF-HP Smart Tank 580-590', 'DIRECT-CVLAPTOP-GU7GCMK6AUC0', 'DIRECT-DC-HP OfficeJet Pro 9720', 'DIRECT-FF-HP Laser 136nw', 'DIRECT-FXDESKTOP-6VH49JMLfCe', 'DIRECT-HD-EPSON-L6460 Series', 'DIRECT-LASOHAMV-L2PUVP', 'DIRECT-LW-1000P', 'DIRECT-OIDESKTOP-LGRA1VJmsyg', 'DIRECT-WD_0a:6a:0a:0a:00:8d', 'DIRECT-aJDESKTOP-9EU23BJQJXD', 'DIRECT-c7-EPSON-L15150 Series', 'DIRECT-pIPAVAN_PARVATAMQQG6', 'Dark', 'Dash-4G', 'DeepAlgorithms wifi', 'Dindu Galaxy', "Don't Download ", 'DreamVu-main_2G', 'DreamVu-main_5G', 'Durga', 'EBDFF944-EA89sIt_b41AOYi', 'ENMGMT4093BD', 'ESP-1D943E', 'Episteme@iiith', "Firearc's Pixel 7a", 'G2199', 'GSLehal', 'GUESTWIFI', 'Galaxy A122EDB', 'Galaxy A13 F031', 'Galaxy A15', 'Galaxy F41D595', 'Galaxy F55 ', 'Galaxy M11562b', 'Galaxy M12647B', 'Galaxy M30FAF6', 'Galaxy S20 FE 5G D4C6', 'Galaxy S21 FE 5G b733', 'Gopal', 'Guest@iiith', 'HLO', 'HLS', 'HP /123', 'HP-Print-1C-LaserJet Pro MFP', 'HP-Print-20-LaserJet Pro M202dw', 'HP-Print-21-LaserJet Pro MFP', 'HP-Print-38-LaserJet Pro MFP', 'HP-Print-40-LaserJet Pro MFP', 'HP-Print-44-LaserJet Pro MFP', 'HP-Print-48-LaserJet Pro MFP', 'HP-Print-51-LaserJet Pro M202dw', 'HP-Print-83-LaserJet Pro M202dw', 'HP-Print-88-LaserJet Pro MFP', 'HP-Print-BB-LaserJet Pro MFP', 'HP-Print-CF-LaserJet Pro MFP', 'HP=SMB01<D4_4104fdw LJ', 'HYLENR LAB', 'Head and Tales Studio', 'Hedwig', 'Hem', 'Hey', 'Himanshu', 'Himanshu_5G', 'Hotspot', 'Hylenr Conference Room', 'Hylenr admin', 'IHUBDATAIIITH', 'IIIT-Guest', 'IT-Infra@iiith', 'InternalWifi', 'JENA SENA', "Jeevan's Galaxy A16 5G", 'JioAirfiberA6', 'JioFi3_1E6520', 'JioFi3_259D0E', 'JioFiber-BMhmL', 'Justin', 'KAIINOS PRO', 'KBRs Mob', 'Kamesh', 'Kartik', "Kawshik's M34 5G", 'Keerthi', 'Kulkarni 501_EXT', 'Kumar moto g52', 'LOKABHIRAM9778', 'Lab_33', 'Light-Dimmer Fallback Hotspot', 'MIFI_C1A6', 'MLR AUTO_2G', 'MSIT-2024', 'MSIT-Broad', 'MSIT-Broad-2024', 'MSIT-Office', 'Madner-PC', 'Medeva', 'Medeva_5g', "Mehul's S24 FE", 'Miami', 'Mine', 'Moto 50 edge pro', 'My_network', 'NAAPS2_2GEXT', 'NK PATEL', 'NR', 'New@com', 'Nhi Dunga, Jio Chala', 'Nikesh nikky', 'Nilgiri_HubSmallConf', 'Nord_CE', 'Nothing 1', 'OPPO F19 Pro+', 'OneImmersive_Guest', 'OnePlus', 'OnePlus 11R 5G', 'OnePlus 3T', 'OnePlus 7T', 'OnePlus Nord 2T 5G', 'OnePlus Nord CE 2', 'OnePlus Nord CE 2 Lite 5G', 'OnePlus Nord CE 3 Lite 5G', 'OnePlus NordCE 5G', 'Oneplus', 'POCO F5', 'POCO M2 Pro', 'POCO X6 Neo 5G', 'POCO X7 Pro', 'Pallavi', 'Phone', 'Pixel_7893', "Pooja's Galaxy A73 5G", 'Predator-PHN16-71', 'Prerna-LabPC', 'Pro Hombres', 'R15-FB10', 'RPaveri', 'RUT_D8B8_5G', 'Rad WiFi', 'Rahul-Jio4g', 'Raycon(98F4AB789B5C)', 'Raycon(98F4AB789D80)', 'Redmi', 'Redmi 12 5G', 'Redmi 9', 'Redmi Note 12 Pro', 'Redmi Note 13 5G', 'Redmi Note 7 Pro', 'Redmi Note 9 Pro', "Rishi's Galaxy S20 FE", "Rohit's A14", 'S23', 'SAMSUNG', 'SCRC_LAB_IOT', 'SCRC_Lab_3', 'SKTA', 'Sabarish Sanjeevi', 'Safe', 'Sahasra', "Sai Charan's F54", 'Sarvesh', 'Sarvo pixel ', 'Shadow Claw', 'Shaikali', 'Shhhhhhh...', "Shivank's Galaxy A52", "Shree's Galaxy A23 5G", 'Shruti', 'SiriHS', 'Skynet', 'Spoorthi5', 'Sri', 'TG5GJio', 'THOR 3270', 'TP-Link_0D7C', 'TP-Link_0EC8', 'TP-Link_14E9', 'TP-Link_1DC2', 'TP-Link_1EF4', 'TP-Link_20D1', 'TP-Link_2D94', 'TP-Link_3778', 'TP-Link_507A', 'TP-Link_540D', 'TP-Link_5470', 'TP-Link_55C9', 'TP-Link_569B', 'TP-Link_75AC', 'TP-Link_9BBB', 'TP-Link_A0A7', 'TP-Link_A427', 'TP-Link_BC75', 'TSAGS300N', 'Tcsw!5!4smart_D', "Tharun's S23", 'ULTRA_800_B93C', 'V Black Beast_30:95:87:D3:8A:78', 'V2029', "Vamsha's S24 Ultra", 'VamsiA50', 'Veda', 'Vgyan', 'Villa 52', 'Vimalsn_2.4', 'Vimalsn_5G', 'Vivek', 'Vyomik', 'WLED-AP', 'Xiaomi 14 Civi', 'YCO_A1284E', 'YESHWANTH', '\\"*Red_Tiger_Spirit*\\', '_____', 'aarg', 'abcd', 'acer', 'ananya-OptiPlex-5090', 'anniewifi', 'anujv-n13', 'ashutosh-Vostro-3888', 'baleno_14:F5:F9:0A:7A:7F', "buddys'", 'ck', 'cometfvr-lab', 'control@rrc', 'cvest', 'disconnected', 'eduroam', 'esw-m19@iiith', 'gvraju', 'iPhone', 'iPhone (2)', 'iQOO Z7s 5G', 'iQOO Z9s ', 'iQOO Z9s 5G', 'iamarnav08', 'ihub@iiith', 'imran ', 'infinos', 'iphipi', 'jai shree ram', 'kaiinos_guest', 'kk', 'mehul-OptiPlex-3000', 'moto g(60)_9290', 'moto g34 5G_9896', 'moto g54 5G_3047', 'mydlink', 'myssid', 'narahari-ICWiBES', 'narzo 50A', 'ntwist', 'onward', 'pradeep', 'pradeep-Vostro-3670', 'pranjal-Vostro-3888', 'project24', 'ravi-Vostro-3669', 'realme 13 Pro+ 5G', 'realme narzo 30 5G', 'redmi8', 'rtl@iiith', 'saurabh-Vostro-3888', 'seshadri_c_wifi_5', 'shiva-Vostro-3670', 'simple', 'skdb s20', 'swetha', 'test-conf', 'vasudha-OptiPlex-5090', 'vignesh_a54', 'vishal', 'viswam@iiith', 'vivo 1819', 'vivo 2018', 'vivo T1 Pro 5G', 'vivo T2x 5G', 'vivo T3x 5G', 'vivo T4x 5G', 'vivo V27', 'vivo Y28e 5G', 'vivo Y33T', 'vivo Y75 5G', 'wheelchair@rrc', 'wifi@iiith', 'wiif']
-  8C:F8:C5:80:BB:69     2 SSIDs: ['IIIT-Guest', 'wifi@iiith']
-  9C:2F:9D:77:AE:BD     2 SSIDs: ['Guest@iiith', 'wifi@iiith']
-  E8:5A:8B:59:61:6F     2 SSIDs: ['IIIT-Guest', 'wifi@iiith']
-  C4:9F:4C:FC:A4:87     2 SSIDs: ['Guest@iiith', 'wifi@iiith']
-  54:67:06:99:29:D3     2 SSIDs: ['Guest@iiith', 'IIIT-Guest']
-  3C:A6:F6:2E:8F:7D     2 SSIDs: ['IIIT-Guest', 'wifi@iiith']
-  B4:8C:9D:65:52:F5     2 SSIDs: ['IIIT-Guest', 'wifi@iiith']
-  10:BD:3A:63:0B:9F     2 SSIDs: ['Guest@iiith', 'wifi@iiith']
-  80:32:53:B1:97:2F     2 SSIDs: ['eduroam', 'viswam@iiith']
-  E8:5A:8B:46:86:F9     2 SSIDs: ['Guest@iiith', 'wifi@iiith']
-  3C:6A:A7:CD:C7:BF     2 SSIDs: ['IIIT-Guest', 'wifi@iiith']
-  F0:77:C3:EF:1A:41     2 SSIDs: ['IIIT-Guest', 'esw-m19@iiith']
-  8C:17:59:DD:BE:2C     2 SSIDs: ['IIIT-Guest', 'wifi@iiith']
-  10:B5:88:6A:19:D6     2 SSIDs: ['IIIT-Guest', 'wifi@iiith']
+────────────────────────────────────────────────────────────────────────  None.
 
 ────────────────────────────────────────────────────────────────────────
   UNCLOSED SESSIONS (assoc seen, no disconnect in log)
-────────────────────────────────────────────────────────────────────────
-  58:6C:25:C5:1B:7E     assoc @ 2025-05-21T23:59:50  AP: event  SSID: IIIT-Guest
-  72:37:87:F8:B8:3A     assoc @ 2025-05-21T19:04:34  AP: event  SSID: Guest@iiith
-  BE:35:51:3D:78:B8     assoc @ 2025-05-21T00:20:02  AP: Academic  SSID: IIIT-Guest
-  4E:30:7F:0F:8E:06     assoc @ 2025-05-21T00:59:12  AP: default-group  SSID: IIIT-Guest
-  E2:2B:50:ED:D9:0E     assoc @ 2025-05-21T18:59:32  AP: default-group  SSID: IIIT-Guest
-  DE:C4:34:B2:EA:ED     assoc @ 2025-05-21T17:31:04  AP: Academic  SSID: Guest@iiith
-  8E:56:42:D1:40:1C     assoc @ 2025-05-21T07:34:18  AP: default-group  SSID: Episteme@iiith
-  46:67:EE:D6:53:AF     assoc @ 2025-05-21T07:27:11  AP: default-group  SSID: IIIT-Guest
-  FA:C3:88:51:B3:87     assoc @ 2025-05-21T15:31:15  AP: default-group  SSID: IIIT-Guest
-  1E:96:FF:B6:52:35     assoc @ 2025-05-21T16:41:22  AP: event  SSID: IIIT-Guest
-  E2:10:68:FA:D9:6A     assoc @ 2025-05-21T08:08:28  AP: default-group  SSID: IIIT-Guest
-  12:43:A3:86:1C:25     assoc @ 2025-05-21T08:23:00  AP: Academic  SSID: Guest@iiith
-  8E:BA:E4:48:71:97     assoc @ 2025-05-21T12:55:36  AP: IASNLP  SSID: IIIT-Guest
-  3A:ED:51:25:67:50     assoc @ 2025-05-21T13:52:25  AP: event  SSID: IT-Infra@iiith
-  A2:EB:CA:CA:AE:A2     assoc @ 2025-05-21T13:41:10  AP: Academic  SSID: Guest@iiith
-  52:02:02:20:80:41     assoc @ 2025-05-21T16:07:44  AP: event  SSID: IIIT-Guest
-  C8:89:F3:E0:E9:91     assoc @ 2025-05-21T16:07:58  AP: IASNLP  SSID: IIIT-Guest
-  C2:7D:76:1B:A7:6F     assoc @ 2025-05-21T14:54:21  AP: default-group  SSID: IIIT-Guest
-  E2:CA:1E:F4:4D:5E     assoc @ 2025-05-21T09:29:59  AP: default-group  SSID: IIIT-Guest
-  32:9D:7E:CC:07:DA     assoc @ 2025-05-21T17:19:04  AP: Academic  SSID: Guest@iiith
+────────────────────────────────────────────────────────────────────────  None.
 
 ────────────────────────────────────────────────────────────────────────
   ROGUE EVENTS
-────────────────────────────────────────────────────────────────────────
-  None in this log.
+────────────────────────────────────────────────────────────────────────  None in this log.
 
 ────────────────────────────────────────────────────────────────────────
   AP LINK FLAPS
-────────────────────────────────────────────────────────────────────────
-  None detected.
+────────────────────────────────────────────────────────────────────────  None detected.
 
 ════════════════════════════════════════════════════════════════════════
   End of report.
@@ -953,25 +135,8 @@ Analyzing ...
 
 
 Top Trap OIDs:
-.1.3.6.1.4.1.9.9.599.0.9 -> 17027
-.1.3.6.1.4.1.9.9.599.0.4 -> 15712
-.1.3.6.1.4.1.9.9.599.0.8 -> 15712
-.1.3.6.1.4.1.14179.2.6.3.41 -> 10536
-.1.3.6.1.4.1.9.9.513.0.19 -> 8628
-.1.3.6.1.4.1.14179.2.6.3.2 -> 8133
-.1.3.6.1.4.1.14179.2.6.3.53 -> 2502
-.1.3.6.1.4.1.14179.2.6.3.13 -> 1975
-.1.3.6.1.4.1.14179.2.6.3.39 -> 1969
-.1.3.6.1.4.1.9.9.615.0.1 -> 1686
-.1.3.6.1.4.1.14179.2.6.3.11 -> 980
-.1.3.6.1.4.1.14179.2.6.3.37 -> 980
-.1.3.6.1.4.1.14179.2.6.3.27 -> 959
-.1.3.6.1.4.1.9.9.610.0.5 -> 903
-.1.3.6.1.4.1.9.9.513.1.6.1.0.2 -> 457
-.1.3.6.1.4.1.9.9.599.0.2 -> 382
-.1.3.6.1.4.1.14179.2.6.3.52 -> 298
-.1.3.6.1.4.1.14179.2.6.3.70 -> 236
-.1.3.6.1.4.1.14179.2.6.3.4 -> 84
-.1.3.6.1.4.1.9.9.513.0.12 -> 55
+.1.3.6.1.4.1.9.9.599.0.8 -> 2
+.1.3.6.1.4.1.14179.2.6.3.2 -> 1
+.1.3.6.1.4.1.14179.2.6.3.11 -> 1
 
 End of analysis.

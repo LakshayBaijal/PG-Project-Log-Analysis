@@ -2,7 +2,7 @@ import json
 from collections import Counter
 from wireless_analyzer import split_traps, extract_trap_oid, TRAP_EVENT_MAP
 
-with open("snmptrap-20250522.log", encoding="utf-8", errors="ignore") as f:
+with open("snmptrap-20250521.log", encoding="utf-8", errors="ignore") as f:
     text = f.read(1024*1024*20)
 
 blocks = split_traps(text)

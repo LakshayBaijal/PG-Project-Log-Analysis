@@ -357,7 +357,17 @@ def extract_mac_from_oid(oid):
             return None
     return None
 
-def extract_varbinds(block, trie):
+EXTRACT_VARBINDS_ALLOWED_FIELDS = {
+    "client_mac",
+    "client_ip",
+    "ap_name",
+    "ap_mac",
+    "ssid",
+    "username",
+    "reason_code",
+}
+
+def extract_varbinds(block, trie, strict=True):
     fields = {}
 
     for line in block.splitlines():
@@ -399,6 +409,9 @@ def extract_varbinds(block, trie):
         mac_suffix = extract_mac_from_oid(oid)
         if mac_suffix and not fields.get("client_mac"):
             fields["client_mac"] = mac_suffix
+
+    if strict:
+        return {k: v for k, v in fields.items() if k in EXTRACT_VARBINDS_ALLOWED_FIELDS}
 
     return fields
 
@@ -512,7 +525,7 @@ class WirelessAnalyzer:
             trap_oid   = extract_trap_oid(block)
             trap_oid_counter[trap_oid] += 1
             src_ip     = extract_source_ip(block)
-            fields = extract_varbinds(block, trie)
+            fields = extract_varbinds(block, trie, strict=False)
 
             # event_type = TRAP_EVENT_MAP.get(trap_oid, "unknown") if trap_oid else "unknown"
             if trap_oid in TRAP_EVENT_MAP:

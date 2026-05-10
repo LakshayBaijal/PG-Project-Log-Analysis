@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Sidebar -->
@@ -22,6 +24,7 @@
                 <ul>
                     <li class="active" id="nav-dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
                     <li id="nav-threat"><i class="fa-solid fa-shield-halved"></i> Threat Intel</li>
+                    <li id="nav-health"><i class="fa-solid fa-heart-pulse"></i> Network Health</li>
                     <li id="nav-client"><i class="fa-solid fa-users"></i> Client Activity</li>
                     <li id="nav-ap"><i class="fa-solid fa-wifi"></i> AP Analytics</li>
                 </ul>
@@ -29,7 +32,7 @@
             <div class="upload-section">
                 <h3><i class="fa-solid fa-upload"></i> Upload Log</h3>
                 <input type="file" id="log-upload" accept=".log,.txt" />
-                
+
                 <div class="date-filters">
                     <div class="filter-group">
                         <label for="start-datetime">Start Time (Optional)</label>
@@ -71,9 +74,12 @@
 
                 <!-- Suspected Actors Panel -->
                 <section class="advanced-analytics" id="section-actors" style="display: none; margin-bottom: 2.5rem;">
-                    <div class="table-card full-width" style="border-color: #ef4444; background: rgba(239, 68, 68, 0.03);">
-                        <h3 style="color: #ef4444;"><i class="fa-solid fa-user-ninja"></i> Suspected Malicious MAC Addresses</h3>
-                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">The system has automatically flagged these devices based on heuristic behavioral rules.</p>
+                    <div class="table-card full-width"
+                        style="border-color: #ef4444; background: rgba(239, 68, 68, 0.03);">
+                        <h3 style="color: #ef4444;"><i class="fa-solid fa-user-ninja"></i> Suspected Malicious MAC
+                            Addresses</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">The system has
+                            automatically flagged these devices based on heuristic behavioral rules.</p>
                         <div class="table-container">
                             <table id="suspects-table">
                                 <thead>
@@ -125,7 +131,7 @@
                         </div>
                     </div>
                 </section>
-                
+
                 <!-- Charts Area Row 3 -->
                 <section class="charts-area">
                     <div class="chart-card full-width">
@@ -135,6 +141,113 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Network Health Panel -->
+                <section class="dashboard-section" id="section-health" style="margin-top: 2.5rem;">
+                    <div class="section-header" style="margin-bottom: 1.5rem;">
+                        <h2><i class="fa-solid fa-heart-pulse"></i> Network Health (Operational Metrics)</h2>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem;">Analysis of 24/7 roaming paths,
+                            client stability, and hardware link flaps.</p>
+                    </div>
+
+                    <div class="charts-area">
+                        <div class="chart-card">
+                            <h3>Frequent Roaming Transitions (Ping-Pong)</h3>
+                            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 1rem;">Top AP-to-AP handoffs
+                                indicating potential cell overlap issues.</p>
+                            <div class="table-container">
+                                <table id="roaming-table">
+                                    <thead>
+                                        <tr>
+                                            <th>From AP</th>
+                                            <th>To AP</th>
+                                            <th>Transitions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <h3>Unstable Connections</h3>
+                            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 1rem;">Clients with the most
+                                sessions lasting under 30 seconds.</p>
+                            <div class="chart-container">
+                                <canvas id="unstableClientsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="charts-area">
+                        <div class="chart-card">
+                            <h3>Session Duration Distribution</h3>
+
+                            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 1rem;">
+                                Distribution of wireless session durations.
+                            </p>
+
+                            <div class="chart-container">
+                                <canvas id="sessionDurationChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-card">
+                            <h3>Session Duration Statistics</h3>
+
+                            <div id="session-stats" style="padding-top:1rem;"></div>
+                        </div>
+
+                    </div> -->
+
+                    <div class="charts-area">
+                        <div class="chart-card full-width">
+                            <h3>Hardware Health: AP Link Flaps</h3>
+                            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 1rem;">Access Points that have
+                                disconnected/reconnected (potential cable or PoE issue).</p>
+                            <div class="table-container">
+                                <table id="link-flaps-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Access Point</th>
+                                            <th>Link Flaps Detected</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <section id="section-deauth" class="dashboard-section">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fa-solid fa-bolt"></i>
+                            Deauthentication Storm Timeline
+                        </h2>
+                    </div>
+
+                    <div class="chart-container large">
+                        <canvas id="deauthTimelineChart"></canvas>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="deauth-table">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>AP</th>
+                                    <th>Count / 60s</th>
+                                    <th>Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </section>
+
             </div>
 
             <!-- Welcome Screen -->
@@ -147,4 +260,5 @@
     </div>
     <script src="app.js"></script>
 </body>
+
 </html>

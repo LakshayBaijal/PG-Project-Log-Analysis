@@ -11,11 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let ssidChartInstance = null;
     let disconnectChartInstance = null;
     let activeUsersChartInstance = null;
+    let deauthTimelineInstance = null;
+    let unstableClientsChartInstance = null;
+    let activityTimelineInstance = null;
+    let sessionDurationInstance = null;
 
     // Navigation logic
     const navItems = {
         'nav-dashboard': 'dashboard-content',
         'nav-threat': 'section-threat',
+        'nav-health': 'section-health',
         'nav-client': 'section-client',
         'nav-ap': 'section-ap'
     };
@@ -46,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Please select a log file first.');
             return;
         }
-        
+
         const file = fileInput.files[0];
         const formData = new FormData();
         formData.append('file', file);
@@ -75,12 +80,12 @@ document.addEventListener('DOMContentLoaded', () => {
     sampleBtn.addEventListener('click', async () => {
         const startDt = document.getElementById('start-datetime').value;
         const endDt = document.getElementById('end-datetime').value;
-        
+
         let url = '/api/sample';
         const params = new URLSearchParams();
         if (startDt) params.append('start_datetime', startDt);
         if (endDt) params.append('end_datetime', endDt);
-        
+
         if (params.toString()) {
             url += '?' + params.toString();
         }
@@ -109,18 +114,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderDashboard(data) {
+
         dashboardContent.classList.remove('hidden');
-        
+
         renderMetrics(data.overview);
-        renderThreats(data.overview);
-        renderSuspects(data.clients);
+
+        renderThreats(data);
+
+        renderHealth(data);
+
+        renderSuspects(data);
+
         renderCharts(data);
+
+        // renderTimeSeriesActivity(data);
+
+        renderSessionAnalytics(data);
+
+        renderDeauthTimeline(
+            data.deauth_windows || []
+        );
     }
 
     function renderMetrics(overview) {
         const grid = document.getElementById('metrics-grid');
         grid.innerHTML = '';
-        
+
         const metrics = [
             { title: "Total Users", value: overview.unique_client_macs, highlight: true },
             { title: "Active WiFi Points", value: overview.unique_aps },
@@ -138,37 +157,67 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function renderThreats(overview) {
+    // ==================== THREAT INTEL PANEL ====================
+    function renderThreats(data) {
         const grid = document.getElementById('threat-grid');
         grid.innerHTML = '';
         let threatsFound = false;
 
-        // Threat 1: Deauth Storms (DoS)
-        if (overview.deauth_windows_detected > 0) {
+        const ov = data.overview || {};
+
+        // 1. Deauth Storms (DoS)
+        if (ov.deauth_windows_detected > 0) {
             threatsFound = true;
             grid.innerHTML += createThreatCard(
-                "fa-bolt", 
-                "Deauth/Disassoc Storms (DoS)", 
+                "fa-bolt",
+                "Deauth/Disassoc Storms (DoS)",
                 "Bursts of deauthentication frames were detected. Attackers might be forcing clients to disconnect to capture handshakes or disrupt service.",
-                overview.deauth_windows_detected + " Windows",
+                ov.deauth_windows_detected + " Windows",
                 true
             );
         }
 
-        // Threat 2: Auth Failures / Brute Force
-        if (overview.clients_failed_never_succeeded > 0) {
+        // 2. Auth Failures / Brute Force
+        if (ov.clients_failed_never_succeeded > 0) {
             threatsFound = true;
             grid.innerHTML += createThreatCard(
-                "fa-key", 
-                "Repeated Authentication Failures", 
+                "fa-key",
+                "Repeated Authentication Failures",
                 "Multiple clients failed authentication and never succeeded. Potential password spraying or brute force attacks.",
-                overview.clients_failed_never_succeeded + " Clients",
+                ov.clients_failed_never_succeeded + " Clients",
+                true
+            );
+        }
+
+        // 3. Rogue Events
+        if (ov.rogue_events > 0) {
+            threatsFound = true;
+            grid.innerHTML += createThreatCard(
+                "fa-user-secret",
+                "Rogue Devices Detected",
+                "Unauthorized Access Points or Clients were detected in the wireless environment.",
+                ov.rogue_events + " Events",
+                true
+            );
+        }
+
+        // 4. AP Link Flaps
+        const flapAps = (data.ap_summary || []).filter(ap => (ap.link_flaps || 0) > 0);
+        if (flapAps.length > 0) {
+            threatsFound = true;
+            grid.innerHTML += createThreatCard(
+                "fa-plug-circle-xmark",
+                "AP Link Flaps Detected",
+                "Access Points experiencing repeated link up/down events. Possible PoE, cable, or hardware issues.",
+                flapAps.length + " APs affected",
                 false
             );
         }
 
         if (!threatsFound) {
-            grid.innerHTML = `<div style="color: var(--success); padding: 1rem;"><i class="fa-solid fa-check-circle"></i> No significant threats detected in this log duration.</div>`;
+            grid.innerHTML = `<div style="color: var(--success); padding: 1rem; text-align: center;">
+                <i class="fa-solid fa-check-circle"></i> No significant threats detected in this log duration.
+            </div>`;
         }
     }
 
@@ -188,11 +237,152 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
+    // ==================== SUSPECTED ACTORS ====================
+    function renderSuspects(data) {
+        const tbody = document.querySelector('#suspects-table tbody');
+        const section = document.getElementById('section-actors');
+        if (!tbody || !section) return;
+
+        tbody.innerHTML = '';
+        let suspects = [];
+
+        (data.clients || []).forEach(c => {
+            let types = [];
+            let reasons = [];
+
+            // Brute Force / Dictionary Attack
+            if (c.auth_failures > 30 && c.auth_successes === 0) {
+                types.push('<span style="color: #f59e0b; font-weight: bold;"><i class="fa-solid fa-key"></i> Brute Force</span>');
+                reasons.push(`${c.auth_failures} consecutive failed logins with 0 successes.`);
+            }
+
+            // Flooding / DoS
+            if (c.total_event_count > 2000) {
+                types.push('<span style="color: #ef4444; font-weight: bold;"><i class="fa-solid fa-bomb"></i> Network Flooding</span>');
+                reasons.push(`Anomalously high event volume (${c.total_event_count} events).`);
+            }
+
+            // Reconnaissance / Scanning
+            if (c.roam_count > 50) {
+                types.push('<span style="color: #3b82f6; font-weight: bold;"><i class="fa-solid fa-satellite-dish"></i> Reconnaissance</span>');
+                reasons.push(`Hopped between APs ${c.roam_count} times.`);
+            }
+
+            // Very short sessions abuse
+            if (c.sessions_under_5s > 8) {
+                types.push('<span style="color: #eab308; font-weight: bold;"><i class="fa-solid fa-clock"></i> Session Abuse</span>');
+                reasons.push(`Multiple extremely short sessions (${c.sessions_under_5s} under 5s).`);
+            }
+
+            if (types.length > 0) {
+                suspects.push({
+                    mac: c.mac,
+                    type: types.join('<br>'),
+                    reason: reasons.join('<br>')
+                });
+            }
+        });
+
+        // Add AP Flaps as infrastructure-level suspects
+        const flappingAps = (data.ap_summary || [])
+            .filter(ap => (ap.link_flaps || 0) > 2)
+            .map(ap => ({
+                mac: ap.ap,
+                type: '<span style="color:#ef4444;font-weight:bold;"><i class="fa-solid fa-plug-circle-xmark"></i> AP Flapping</span>',
+                reason: `${ap.link_flaps} link flaps detected`
+            }));
+
+        suspects = [...suspects, ...flappingAps];
+
+        if (suspects.length === 0) {
+            section.style.display = 'none';
+        } else {
+            section.style.display = 'block';
+            suspects.slice(0, 15).forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-family: monospace; font-size: 1.05rem; font-weight: 600;">${s.mac}</td>
+                    <td>${s.type}</td>
+                    <td><span style="color: #94a3b8;">${s.reason}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    }
+
+    function renderHealth(data) {
+        // Roaming Table
+        const roamBody = document.querySelector('#roaming-table tbody');
+        if (roamBody) {
+            roamBody.innerHTML = '';
+            const topRoams = (data.roaming_analysis?.most_common_ap_transitions || []).slice(0, 10);
+            if (topRoams.length === 0) {
+                roamBody.innerHTML = `<tr><td colspan="3">No roaming data available</td></tr>`;
+            } else {
+                topRoams.forEach(r => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${r.from_ap}</td>
+                        <td>${r.to_ap}</td>
+                        <td><strong>${r.count}</strong></td>
+                    `;
+                    roamBody.appendChild(tr);
+                });
+            }
+        }
+
+        // Unstable Clients Chart
+        const ctxUnstable = document.getElementById('unstableClientsChart')?.getContext('2d');
+        if (ctxUnstable) {
+            if (unstableClientsChartInstance) unstableClientsChartInstance.destroy();
+            const unstableUsers = (data.clients || [])
+                .filter(c => c.sessions_under_30s > 0)
+                .sort((a, b) => b.sessions_under_30s - a.sessions_under_30s)
+                .slice(0, 10);
+
+            unstableClientsChartInstance = new Chart(ctxUnstable, {
+                type: 'bar',
+                data: {
+                    labels: unstableUsers.map(u => u.mac.substring(0, 8) + '...'),
+                    datasets: [{
+                        label: 'Sessions Under 30s',
+                        data: unstableUsers.map(u => u.sessions_under_30s),
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 4
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        // Link Flaps Table
+        const flapsBody = document.querySelector('#link-flaps-table tbody');
+        if (flapsBody) {
+            flapsBody.innerHTML = '';
+            const flapsAps = (data.ap_summary || [])
+                .filter(ap => (ap.link_flaps || 0) > 0)
+                .sort((a, b) => b.link_flaps - a.link_flaps);
+
+            if (flapsAps.length === 0) {
+                flapsBody.innerHTML = `<tr><td colspan="2">No link flaps detected.</td></tr>`;
+            } else {
+                flapsAps.forEach(ap => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${ap.ap}</td>
+                        <td><span style="color: #ef4444; font-weight: bold;">${ap.link_flaps}</span></td>
+                    `;
+                    flapsBody.appendChild(tr);
+                });
+            }
+        }
+    }
+
     function renderCharts(data) {
         Chart.defaults.color = '#94a3b8';
         Chart.defaults.font.family = "'Inter', sans-serif";
-        
-        // 1. AP Events Chart
+
+        // AP Events Chart
         const ctxAp = document.getElementById('apEventsChart').getContext('2d');
         if (apChartInstance) apChartInstance.destroy();
         const topAps = (data.ap_summary || []).slice(0, 10);
@@ -215,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // 2. Auth Chart (Failed Logins)
+        // Auth Failures Chart
         const ctxAuth = document.getElementById('authChart').getContext('2d');
         if (authChartInstance) authChartInstance.destroy();
         const topFailAps = (data.auth_failure_analysis?.per_ap || []).slice(0, 5);
@@ -232,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // 3. Top WiFi Networks (SSIDs)
+        // SSID Chart
         const ctxSsid = document.getElementById('ssidChart').getContext('2d');
         if (ssidChartInstance) ssidChartInstance.destroy();
         const topSsids = (data.ssid_analysis || []).slice(0, 5);
@@ -249,10 +439,10 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // 4. Why Users Disconnected
+        // Disconnect Reasons
         const ctxDisc = document.getElementById('disconnectChart').getContext('2d');
         if (disconnectChartInstance) disconnectChartInstance.destroy();
-        
+
         let reasonCounts = {};
         (data.clients || []).forEach(c => {
             if (c.deauth_disassoc_reasons) {
@@ -261,12 +451,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-        
-        let reasons = Object.entries(reasonCounts).sort((a,b) => b[1] - a[1]).slice(0, 5);
-        if (reasons.length === 0) {
-            reasons = [["No Disconnect Data", 1]];
-        }
-        
+
+        let reasons = Object.entries(reasonCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+        if (reasons.length === 0) reasons = [["No Disconnect Data", 1]];
+
         disconnectChartInstance = new Chart(ctxDisc, {
             type: 'doughnut',
             data: {
@@ -280,15 +468,15 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { responsive: true, maintainAspectRatio: false }
         });
 
-        // 5. Most Active Users
+        // Most Active Users
         const ctxActive = document.getElementById('activeUsersChart').getContext('2d');
         if (activeUsersChartInstance) activeUsersChartInstance.destroy();
-        
-        const topUsers = (data.clients || []).sort((a,b) => b.total_event_count - a.total_event_count).slice(0, 10);
+
+        const topUsers = (data.clients || []).sort((a, b) => b.total_event_count - a.total_event_count).slice(0, 10);
         activeUsersChartInstance = new Chart(ctxActive, {
             type: 'bar',
             data: {
-                labels: topUsers.map(u => u.mac),
+                labels: topUsers.map(u => u.mac.substring(0, 8) + '...'),
                 datasets: [{
                     label: 'Total Activity Events',
                     data: topUsers.map(u => u.total_event_count),
@@ -300,59 +488,283 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function renderSuspects(clients) {
-        const tbody = document.querySelector('#suspects-table tbody');
-        const section = document.getElementById('section-actors');
-        if (!tbody || !section) return;
-        
-        tbody.innerHTML = '';
-        let suspects = [];
 
-        (clients || []).forEach(c => {
-            let types = [];
-            let reasons = [];
+    // function renderTimeSeriesActivity(data) {
 
-            // Rule 1: Brute Force / Dictionary Attack
-            if (c.auth_failures > 50 && c.auth_successes === 0) {
-                types.push('<span style="color: #f59e0b; font-weight: bold;"><i class="fa-solid fa-key"></i> Brute Force</span>');
-                reasons.push(`${c.auth_failures} consecutive failed logins with 0 successes.`);
-            }
+    //     const ctx =
+    //         document.getElementById(
+    //             'activityTimelineChart'
+    //         )?.getContext('2d');
 
-            // Rule 2: Flooding / DoS
-            if (c.total_event_count > 3000) {
-                types.push('<span style="color: #ef4444; font-weight: bold;"><i class="fa-solid fa-bomb"></i> Network Flooding</span>');
-                reasons.push(`Anomalously high event volume (${c.total_event_count} events).`);
-            }
+    //     if (!ctx) return;
 
-            // Rule 3: Reconnaissance / Scanning
-            if (c.roam_count > 60) {
-                types.push('<span style="color: #3b82f6; font-weight: bold;"><i class="fa-solid fa-satellite-dish"></i> Reconnaissance</span>');
-                reasons.push(`Hopped between APs ${c.roam_count} times in a short duration.`);
-            }
+    //     if (activityTimelineInstance) {
+    //         activityTimelineInstance.destroy();
+    //     }
 
-            if (types.length > 0) {
-                suspects.push({
-                    mac: c.mac,
-                    type: types.join('<br>'),
-                    reason: reasons.join('<br>')
-                });
+    //     let buckets = {};
+
+    //     (data.clients || []).forEach(client => {
+
+    //         (client.activity_timestamps || [])
+    //             .forEach(ts => {
+
+    //                 const d = new Date(ts);
+
+    //                 const label =
+    //                     d.getHours()
+    //                         .toString()
+    //                         .padStart(2, '0')
+    //                     + ':00';
+
+    //                 buckets[label] =
+    //                     (buckets[label] || 0) + 1;
+    //             });
+    //     });
+
+    //     if (Object.keys(buckets).length === 0) {
+
+    //         buckets = {
+    //             "00:00": 0
+    //         };
+    //     }
+
+    //     const labels =
+    //         Object.keys(buckets).sort();
+
+    //     activityTimelineInstance =
+    //         new Chart(ctx, {
+
+    //             type: 'line',
+
+    //             data: {
+
+    //                 labels: labels,
+
+    //                 datasets: [{
+    //                     label: 'Wireless Events',
+
+    //                     data:
+    //                         labels.map(
+    //                             l => buckets[l]
+    //                         ),
+
+    //                     borderColor: '#3b82f6',
+
+    //                     backgroundColor:
+    //                         'rgba(59,130,246,0.15)',
+
+    //                     fill: true,
+
+    //                     tension: 0.35
+    //                 }]
+    //             },
+
+    //             options: {
+    //                 responsive: true,
+    //                 maintainAspectRatio: false
+    //             }
+    //         });
+    // }
+
+    function renderSessionAnalytics(data) {
+
+        const ctx =
+            document.getElementById(
+                'sessionDurationChart'
+            )?.getContext('2d');
+
+        if (!ctx) return;
+
+        if (sessionDurationInstance) {
+            sessionDurationInstance.destroy();
+        }
+
+        let durations = [];
+
+        (data.clients || []).forEach(client => {
+
+            if (client.session_durations) {
+
+                durations.push(
+                    ...client.session_durations
+                );
             }
         });
 
-        if (suspects.length === 0) {
-            section.style.display = 'none';
-        } else {
-            section.style.display = 'block';
-            // Show up to top 15 suspects
-            suspects.slice(0, 15).forEach(s => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-family: monospace; font-size: 1.05rem; font-weight: 600;">${s.mac}</td>
-                    <td>${s.type}</td>
-                    <td><span style="color: #94a3b8;">${s.reason}</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
+        if (durations.length === 0) {
+
+            durations = [5, 20, 60, 300];
         }
+
+        const buckets = {
+            '<30s': 0,
+            '30s-2m': 0,
+            '2m-10m': 0,
+            '10m-30m': 0,
+            '>30m': 0
+        };
+
+        durations.forEach(sec => {
+
+            if (sec < 30)
+                buckets['<30s']++;
+
+            else if (sec < 120)
+                buckets['30s-2m']++;
+
+            else if (sec < 600)
+                buckets['2m-10m']++;
+
+            else if (sec < 1800)
+                buckets['10m-30m']++;
+
+            else
+                buckets['>30m']++;
+        });
+
+        sessionDurationInstance =
+            new Chart(ctx, {
+
+                type: 'bar',
+
+                data: {
+
+                    labels:
+                        Object.keys(buckets),
+
+                    datasets: [{
+                        label: 'Sessions',
+
+                        data:
+                            Object.values(
+                                buckets
+                            ),
+
+                        backgroundColor:
+                            '#8b5cf6',
+
+                        borderRadius: 6
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+        const avg =
+            durations.reduce(
+                (a, b) => a + b,
+                0
+            ) / durations.length;
+
+        const max =
+            Math.max(...durations);
+
+        const min =
+            Math.min(...durations);
+
+        document.getElementById(
+            'session-stats'
+        ).innerHTML = `
+
+            <div class="metric-card">
+                <div class="metric-title">
+                    Average Session
+                </div>
+
+                <div class="metric-value">
+                    ${Math.round(avg)} sec
+                </div>
+            </div>
+
+            <div class="metric-card" style="margin-top:1rem;">
+                <div class="metric-title">
+                    Longest Session
+                </div>
+
+                <div class="metric-value">
+                    ${Math.round(max)} sec
+                </div>
+            </div>
+
+            <div class="metric-card" style="margin-top:1rem;">
+                <div class="metric-title">
+                    Shortest Session
+                </div>
+
+                <div class="metric-value">
+                    ${Math.round(min)} sec
+                </div>
+            </div>
+        `;
+    }
+
+    function renderDeauthTimeline(windows) {
+        // Table
+        const tbody = document.querySelector('#deauth-table tbody');
+        if (tbody) {
+            tbody.innerHTML = '';
+            windows
+                .sort((a, b) => b.count_in_60s - a.count_in_60s)
+                .slice(0, 25)
+                .forEach(w => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${new Date(w.window_start).toLocaleString()}</td>
+                        <td>${w.ap}</td>
+                        <td><span style="color: #ef4444; font-weight: bold;">${w.count_in_60s}</span></td>
+                        <td>${Math.round(w.duration_sec)} sec</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+        }
+
+        // Chart
+        const ctx = document.getElementById('deauthTimelineChart')?.getContext('2d');
+        if (!ctx) return;
+
+        if (deauthTimelineInstance) deauthTimelineInstance.destroy();
+
+        const topWindows = windows
+            .sort((a, b) => new Date(a.window_start) - new Date(b.window_start))
+            .slice(0, 50);
+
+        deauthTimelineInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: topWindows.map(w => new Date(w.window_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
+                datasets: [{
+                    label: 'Deauth Events / 60s',
+                    data: topWindows.map(w => w.count_in_60s),
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239,68,68,0.15)',
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function (context) {
+                                const w = topWindows[context.dataIndex];
+                                return [`AP: ${w.ap}`, `Duration: ${Math.round(w.duration_sec)} sec`];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { ticks: { maxRotation: 45, minRotation: 45 } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Events' } }
+                }
+            }
+        });
     }
 });

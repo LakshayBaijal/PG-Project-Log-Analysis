@@ -62,8 +62,15 @@ import argparse
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
+from contextlib import redirect_stdout
 
+from collections import Counter
+trap_oid_counter = Counter()
+# inside ingest(), after extract_trap_oid():
 
+# after the loop, print:
+# for oid, count in trap_oid_counter.most_common(20):
+#     print(oid, count)
 # ---------------------------------------------------------------------------
 # OID → semantic field  (Cisco LWAPP / Airespace / common WLC MIBs)
 # Add your site-specific OIDs here without touching anything else.
@@ -444,6 +451,7 @@ class WirelessAnalyzer:
                 continue
 
             trap_oid   = extract_trap_oid(block)
+            trap_oid_counter[trap_oid] += 1
             src_ip     = extract_source_ip(block)
             fields = extract_varbinds(block, trie)
 
@@ -577,15 +585,14 @@ class WirelessAnalyzer:
             elif event_type in ("link_up", "link_down"):
                 self.ap_link_events[ap].append({"ts": ts, "event": event_type})
 
-        # Compute every deauth burst window (every window with ≥3 events in 60 s)
+        # Compute disjoint deauth burst windows (every window with ≥3 events in 60 s)
         for ap, times in deauth_times_by_ap.items():
             times.sort()
-            reported_starts = set()
-            for i, t in enumerate(times):
+            i = 0
+            while i < len(times):
+                t = times[i]
                 window = [x for x in times[i:] if (x - t).total_seconds() <= 60]
-                key = t.isoformat()
-                if len(window) >= 3 and key not in reported_starts:
-                    reported_starts.add(key)
+                if len(window) >= 3:
                     self.deauth_windows.append({
                         "ap": ap,
                         "window_start": t,
@@ -593,9 +600,15 @@ class WirelessAnalyzer:
                         "count": len(window),
                         "duration_sec": (window[-1] - t).total_seconds(),
                     })
+                    # Skip to the end of this window to avoid overlapping counts
+                    i += len(window)
+                else:
+                    i += 1
 
         print(f"  Parsed {len(self.events)} events.")
-
+    
+        for oid, count in trap_oid_counter.most_common(20):
+            print(oid, count)
 
 # ---------------------------------------------------------------------------
 # REPORT BUILDER
@@ -1072,27 +1085,70 @@ def serialize(obj):
     raise TypeError(f"Not serializable: {type(obj)}")
 
 
+# def main():
+#     parser = argparse.ArgumentParser(description="Wireless SNMP trap analyzer")
+#     parser.add_argument("--log",         required=True)
+#     parser.add_argument("--out",         default="wireless_report.json")
+#     parser.add_argument("--hours-start", type=int, default=8)
+#     parser.add_argument("--hours-end",   type=int, default=20)
+#     args = parser.parse_args()
+
+#     print(f"\nLoading {args.log!r} ...")
+#     log_text = Path(args.log).read_text(errors="ignore")
+
+#     az = WirelessAnalyzer(args.hours_start, args.hours_end)
+#     print("Analyzing ...")
+#     az.ingest(log_text)
+
+#     report = build_report(az)
+#     print_report(report, az)
+
+#     with open(args.out, "w") as f:
+#         json.dump(report, f, indent=2, default=serialize)
+#     print(f"JSON report → {args.out!r}")
+
+
+
+
+
 def main():
     parser = argparse.ArgumentParser(description="Wireless SNMP trap analyzer")
-    parser.add_argument("--log",         required=True)
-    parser.add_argument("--out",         default="wireless_report.json")
+    parser.add_argument("--log", required=True)
+    parser.add_argument("--out", default="wireless_report.json")
+    parser.add_argument("--txt-report", default="wireless_report.txt")
     parser.add_argument("--hours-start", type=int, default=8)
-    parser.add_argument("--hours-end",   type=int, default=20)
+    parser.add_argument("--hours-end", type=int, default=20)
     args = parser.parse_args()
 
-    print(f"\nLoading {args.log!r} ...")
     log_text = Path(args.log).read_text(errors="ignore")
 
     az = WirelessAnalyzer(args.hours_start, args.hours_end)
-    print("Analyzing ...")
-    az.ingest(log_text)
 
-    report = build_report(az)
-    print_report(report, az)
+    # Capture ALL console output into text report
+    with open(args.txt_report, "w") as txt_out:
+        with redirect_stdout(txt_out):
 
+            print(f"\nLoading {args.log!r} ...")
+            print("Analyzing ...")
+
+            az.ingest(log_text)
+
+            report = build_report(az)
+
+            print_report(report, az)
+
+            print("\nTop Trap OIDs:")
+            for oid, count in trap_oid_counter.most_common(20):
+                print(f"{oid} -> {count}")
+
+            print("\nEnd of analysis.")
+
+    # Save JSON separately
     with open(args.out, "w") as f:
         json.dump(report, f, indent=2, default=serialize)
-    print(f"JSON report → {args.out!r}")
+
+    print(f"Text report saved to: {args.txt_report}")
+    print(f"JSON report saved to: {args.out}")
 
 
 if __name__ == "__main__":

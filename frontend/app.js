@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         dashboardContent.classList.remove('hidden');
 
-        renderMetrics(data.overview);
+        renderMetrics(data);
 
         renderThreats(data);
 
@@ -136,15 +136,21 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
-    function renderMetrics(overview) {
+    function renderMetrics(data) {
         const grid = document.getElementById('metrics-grid');
         grid.innerHTML = '';
 
+        const overview = data.overview || {};
+        const apSummary = Array.isArray(data.ap_summary) ? data.ap_summary : [];
+        const connectionAttempts = apSummary.length
+            ? apSummary.reduce((sum, ap) => sum + (ap.total_sessions || 0), 0)
+            : (overview.completed_sessions_paired || 0);
+
         const metrics = [
-            { title: "Total Users", value: overview.unique_client_macs, highlight: true },
-            { title: "Active WiFi Points", value: overview.unique_aps },
-            { title: "Total Connections", value: overview.completed_sessions_paired },
-            { title: "Failed Logins", value: overview.total_auth_failures }
+            { title: "Total Users", value: overview.unique_client_macs || 0, highlight: true },
+            { title: "Active WiFi Points", value: overview.unique_aps || 0 },
+            { title: "Connection Attempts", value: connectionAttempts },
+            { title: "Failed Logins", value: overview.total_auth_failures || 0 }
         ];
 
         metrics.forEach(m => {
@@ -396,10 +402,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     backgroundColor: '#3b82f6',
                     borderRadius: 4
                 }, {
-                    label: 'Total Connections',
+                    label: 'Session Attempts',
                     data: topAps.map(ap => ap.total_sessions),
                     backgroundColor: '#8b5cf6',
                     borderRadius: 4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // Connection Attempt Success vs. Failure Chart
+        const ctxConn = document.getElementById('connectionSuccessChart').getContext('2d');
+        if (window.connectionSuccessChartInstance) window.connectionSuccessChartInstance.destroy();
+        
+        let totalSuccesses = 0;
+        let totalFailures = data.overview?.total_auth_failures || 0;
+        (data.clients || []).forEach(c => {
+            totalSuccesses += (c.auth_successes || 0);
+        });
+        
+        window.connectionSuccessChartInstance = new Chart(ctxConn, {
+            type: 'doughnut',
+            data: {
+                labels: ['Successful Connections', 'Failed Attempts'],
+                datasets: [{
+                    data: [totalSuccesses, totalFailures],
+                    backgroundColor: ['#10b981', '#ef4444'],
+                    borderWidth: 0
                 }]
             },
             options: { responsive: true, maintainAspectRatio: false }

@@ -84,7 +84,7 @@
                             <table id="suspects-table">
                                 <thead>
                                     <tr>
-                                        <th>MAC Address</th>
+                                        <th>Device / MAC Address</th>
                                         <th>Suspected Attack Type</th>
                                         <th>Reason / Rule Triggered</th>
                                     </tr>
@@ -109,7 +109,13 @@
                         </div>
                     </div>
                     <div class="chart-card">
-                        <h3>Failed Logins Analysis</h3>
+                        <h3>Connection Attempt Success vs. Failure</h3>
+                        <div class="chart-container">
+                            <canvas id="connectionSuccessChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Failed Logins by AP</h3>
                         <div class="chart-container">
                             <canvas id="authChart"></canvas>
                         </div>
@@ -179,7 +185,7 @@
                         </div>
                     </div>
 
-                    <!-- <div class="charts-area">
+                    <div class="charts-area">
                         <div class="chart-card">
                             <h3>Session Duration Distribution</h3>
 
@@ -198,7 +204,7 @@
                             <div id="session-stats" style="padding-top:1rem;"></div>
                         </div>
 
-                    </div> -->
+                    </div>
 
                     <div class="charts-area">
                         <div class="chart-card full-width">

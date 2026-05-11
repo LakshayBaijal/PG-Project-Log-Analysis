@@ -273,61 +273,79 @@ import re
 MAC_REGEX = re.compile(r'^([0-9A-F]{2}:){5}[0-9A-F]{2}$', re.I)
 IP_REGEX  = re.compile(r'^\d{1,3}(\.\d{1,3}){3}$')
 
-
 def infer_field(name, value):
     if not name:
         return None
 
-    n = name.lower()
+    n = name.lower().strip()
     v = value.strip() if isinstance(value, str) else ""
 
     # -------------------------
-    # STRONG: value-based detection
+    # AP NAME DETECTION FIRST
     # -------------------------
-    if MAC_REGEX.match(v):
-        if "ap" in n:
-            return "ap_mac"
-        return "client_mac"
-
-    if IP_REGEX.match(v):
-        return "client_ip"
+    if "apname" in n or ("ap" in n and "name" in n):
+        return "ap_name"
 
     # -------------------------
-    # NAME-based detection
+    # SSID
     # -------------------------
     if "ssid" in n:
         return "ssid"
 
+    # -------------------------
+    # USERNAME
+    # -------------------------
     if "user" in n or "login" in n:
         return "username"
 
-    if "apname" in n or ("ap" in n and "name" in n):
-        return "ap_name"
-
-    if "bssid" in n:
-        return "ap_mac"
-
-    if "mac" in n:
-        if "ap" in n:
-            return "ap_mac"
-        return "client_mac"
-
-    if "ip" in n:
-        return "client_ip"
-
-    if "reason" in n:
-        return "reason_code"
-
+    # -------------------------
+    # RSSI / SNR
+    # -------------------------
     if "rssi" in n:
         return "rssi"
 
     if "snr" in n:
         return "snr"
 
+    # -------------------------
+    # REASON
+    # -------------------------
+    if "reason" in n:
+        return "reason_code"
+
+    # -------------------------
+    # AUTH FAIL
+    # -------------------------
     if "auth" in n and "fail" in n:
         return "auth_fail_reason"
 
+    # -------------------------
+    # IP ADDRESS
+    # -------------------------
+    if IP_REGEX.match(v):
+        return "client_ip"
+
+    # -------------------------
+    # MAC ADDRESS
+    # ONLY IF FIELD NAME SAYS MAC/BSSID
+    # -------------------------
+    if MAC_REGEX.match(v):
+
+        if "bssid" in n:
+            return "ap_mac"
+
+        if "apmac" in n or ("ap" in n and "mac" in n):
+            return "ap_mac"
+
+        if "client" in n or "station" in n or "sta" in n:
+            return "client_mac"
+
+        if "mac" in n:
+            return "client_mac"
+
     return None
+
+
 
 def extract_trap_oid(block):
     m = re.search(
@@ -437,6 +455,9 @@ class WirelessAnalyzer:
         self.end_dt         = end_dt
         self.events         = []
 
+        self.ap_presence_sessions = defaultdict(list)
+        self.active_presence = {}
+        self.session_timeout = 300   # 5 mins
         # AP-level
         self.ap_clients     = defaultdict(set)
         self.ap_events      = defaultdict(list)
@@ -445,6 +466,7 @@ class WirelessAnalyzer:
         self.ap_deauths     = defaultdict(int)
         self.ap_disassocs   = defaultdict(int)
         self.ap_link_events = defaultdict(list)
+        self.ap_client_sessions = {}   # AP_NAME -> list of session dicts
 
         # Client-level
         self.client_events     = defaultdict(list)
@@ -492,6 +514,81 @@ class WirelessAnalyzer:
             return None
         floored = ts.replace(minute=(ts.minute // 5) * 5, second=0, microsecond=0)
         return floored.strftime("%Y-%m-%d %H:%M")
+    # def _record_client_session(self, client_mac, ap_name, ssid, username, start_ts, end_ts):
+    #     if ap_name not in self.ap_client_sessions:
+    #         self.ap_client_sessions[ap_name] = []
+        
+    #     duration = (end_ts - start_ts).total_seconds() if start_ts and end_ts else None
+        
+    #     session = {
+    #         "client_mac": client_mac,
+    #         "username": username or "N/A",
+    #         "ssid": ssid or "Unknown",
+    #         "start_time": start_ts.isoformat() if start_ts else None,
+    #         "end_time": end_ts.isoformat() if end_ts else None,
+    #         "duration_seconds": round(duration, 2) if duration is not None else None,
+    #         "duration_human": hms(duration) if duration is not None else "N/A"
+    #     }
+        
+    #     self.ap_client_sessions[ap_name].append(session)
+
+
+    def _update_presence_session(self, event):
+        ts = event["ts"]
+        ap = event["ap"]
+
+        if not ts or not ap:
+            return
+
+        identity = (
+            event["username"]
+            or event["mac"]
+            or "unknown"
+        )
+
+        key = (identity, ap)
+
+        existing = self.active_presence.get(key)
+
+        if existing:
+            gap = (ts - existing["last_seen"]).total_seconds()
+
+            # same continuous session
+            if gap <= self.session_timeout:
+                existing["last_seen"] = ts
+                existing["events"] += 1
+
+                if event["ssid"]:
+                    existing["ssids"].add(event["ssid"])
+
+                return
+
+            # session expired -> finalize
+            duration = (
+                existing["last_seen"] - existing["start_time"]
+            ).total_seconds()
+
+            self.ap_presence_sessions[ap].append({
+                "identity": identity,
+                "username": existing["username"],
+                "mac": existing["mac"],
+                "start_time": existing["start_time"].isoformat(),
+                "end_time": existing["last_seen"].isoformat(),
+                "duration_seconds": round(duration, 2),
+                "duration_human": hms(duration),
+                "events": existing["events"],
+                "ssids": sorted(existing["ssids"]),
+            })
+
+        # start new session
+        self.active_presence[key] = {
+            "username": event["username"],
+            "mac": event["mac"],
+            "start_time": ts,
+            "last_seen": ts,
+            "events": 1,
+            "ssids": set([event["ssid"]]) if event["ssid"] else set(),
+        }
 
     def ingest(self, log_text):
         blocks = split_traps(log_text)
@@ -543,6 +640,7 @@ class WirelessAnalyzer:
                 "reason": reason, "raw_fields": fields,
             }
             self.events.append(event)
+            self._update_presence_session(event)
 
             # Temporal
             if ts:
@@ -577,7 +675,7 @@ class WirelessAnalyzer:
                 self.ssid_aps[ssid].add(ap)
 
             # Dispatch
-            if event_type in ("assoc", "reassoc", "auth_success"):
+            if event_type in ("assoc", "reassoc"):
                 self.ap_sessions[ap] += 1
                 if ssid:
                     self.ssid_sessions[ssid] += 1
@@ -631,6 +729,15 @@ class WirelessAnalyzer:
                                 < self.business_end
                             ),
                         })
+
+                        # self._record_client_session(
+                        #     client_mac=mac,
+                        #     ap_name=start_ev["ap"],
+                        #     ssid=start_ev["ssid"],
+                        #     username=start_ev.get("username"),
+                        #     start_ts=start_ev["ts"],
+                        #     end_ts=ts
+                        # )
                     else:
                         # Orphan end event (disconnect without a seen start in log)
                         if not correlated_deauth:
@@ -644,6 +751,15 @@ class WirelessAnalyzer:
                                 "duration_sec": 0, "reason": reason,
                                 "off_hours": not (self.business_start <= (ts.hour if ts else 0) < self.business_end),
                             })
+
+                            # self._record_client_session(
+                            #     client_mac=mac,
+                            #     ap_name=ap,
+                            #     ssid=ssid,
+                            #     username=username,
+                            #     start_ts=ts,
+                            #     end_ts=ts
+                            # )
 
             elif event_type == "auth_fail":
                 correlated = False
@@ -726,6 +842,25 @@ class WirelessAnalyzer:
                 else:
                     i += 1
 
+
+        # finalize remaining active sessions
+        for (identity, ap), sess in self.active_presence.items():
+
+            duration = (
+                sess["last_seen"] - sess["start_time"]
+            ).total_seconds()
+
+            self.ap_presence_sessions[ap].append({
+                "identity": identity,
+                "username": sess["username"],
+                "mac": sess["mac"],
+                "start_time": sess["start_time"].isoformat(),
+                "end_time": sess["last_seen"].isoformat(),
+                "duration_seconds": round(duration, 2),
+                "duration_human": hms(duration),
+                "events": sess["events"],
+                "ssids": sorted(sess["ssids"]),
+            })
         print(f"  Parsed {len(self.events)} events.")
     
         for oid, count in trap_oid_counter.most_common(20):
@@ -1034,6 +1169,28 @@ def build_report(az):
         }
         for mac, ev in az._pending_assoc.items()
     ]
+    
+    # ap_client_sessions = {}
+    # for ap, sessions in sorted(az.ap_client_sessions.items()):
+    #     # Sort sessions by start time (most recent first)
+    #     sorted_sessions = sorted(
+    #         sessions, 
+    #         key=lambda x: x["start_time"] or "", 
+    #         reverse=True
+    #     )
+    #     ap_client_sessions[ap] = sorted_sessions[:500]  # limit to avoid huge payload
+    
+    # report["ap_client_sessions"] = ap_client_sessions
+
+
+    report["ap_client_sessions"] = {
+        ap: sorted(
+            sessions,
+            key=lambda x: x["duration_seconds"],
+            reverse=True
+        )
+        for ap, sessions in az.ap_presence_sessions.items()
+    }
 
     return report
 
@@ -1255,7 +1412,7 @@ def serialize(obj):
 def main():
     parser = argparse.ArgumentParser(description="Wireless SNMP trap analyzer")
     parser.add_argument("--log", required=True)
-    parser.add_argument("--out", default="wireless_report.json")
+    parser.add_argument("--out", default="wireless_report_try.json")
     parser.add_argument("--txt-report", default="wireless_report.txt")
     parser.add_argument("--hours-start", type=int, default=8)
     parser.add_argument("--hours-end", type=int, default=20)

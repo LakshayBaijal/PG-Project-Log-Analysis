@@ -22,8 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'nav-threat': 'section-threat',
         'nav-health': 'section-health',
         'nav-client': 'section-client',
-        'nav-ap': 'section-ap',
-        'nav-ap-client': 'section-ap-client'
+        'nav-ap': 'section-ap'
     };
 
     Object.keys(navItems).forEach(navId => {
@@ -135,8 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderDeauthTimeline(
             data.deauth_windows || []
         );
-
-        renderAPClientSessions(data);
     }
 
     function renderMetrics(data) {
@@ -417,13 +414,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Connection Attempt Success vs. Failure Chart
         const ctxConn = document.getElementById('connectionSuccessChart').getContext('2d');
         if (window.connectionSuccessChartInstance) window.connectionSuccessChartInstance.destroy();
-
+        
         let totalSuccesses = 0;
         let totalFailures = data.overview?.total_auth_failures || 0;
         (data.clients || []).forEach(c => {
             totalSuccesses += (c.auth_successes || 0);
         });
-
+        
         window.connectionSuccessChartInstance = new Chart(ctxConn, {
             type: 'doughnut',
             data: {
@@ -598,63 +595,6 @@ document.addEventListener('DOMContentLoaded', () => {
     //             }
     //         });
     // }
-
-
-
-    function renderAPClientSessions(report) {
-        const container = document.getElementById('ap-sessions-container');
-        container.innerHTML = '';
-
-        if (!report.ap_client_sessions || Object.keys(report.ap_client_sessions).length === 0) {
-            container.innerHTML = '<p>No session data available.</p>';
-            return;
-        }
-
-        Object.keys(report.ap_client_sessions).sort().forEach(apName => {
-            const sessions = report.ap_client_sessions[apName];
-
-            let html = `
-                <div class="ap-card">
-                    <h3>${apName} <span class="count">(${sessions.length} sessions)</span></h3>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Client MAC</th>
-                                <th>Username</th>
-                                <th>SSID</th>
-                                <th>Duration</th>
-                                <th>Start Time</th>
-                                <th>End Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-
-            sessions.forEach(s => {
-                html += `
-                    <tr>
-                        <td><strong>${s.client_mac}</strong></td>
-                        <td>${s.username}</td>
-                        <td>${s.ssid}</td>
-                        <td>${s.duration_human}</td>
-                        <td>${s.start_time ? new Date(s.start_time).toLocaleString() : 'N/A'}</td>
-                        <td>${s.end_time ? new Date(s.end_time).toLocaleString() : 'N/A'}</td>
-                    </tr>`;
-            });
-
-            html += `</tbody></table></div>`;
-            container.innerHTML += html;
-        });
-    }
-
-    // Filter function
-    function filterAPSessions() {
-        const term = document.getElementById('apSearch').value.toLowerCase();
-        // Simple client-side filter logic can be added
-    }
-
-
-
-
 
     function renderSessionAnalytics(data) {
 

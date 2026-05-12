@@ -19,44 +19,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-REPORTS_DIR = Path("reports")
-REPORTS_DIR.mkdir(exist_ok=True)
-
-
-def save_report_locally(report, log_text=None):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-    json_path = REPORTS_DIR / f"wireless_report_{timestamp}.json"
-
-    with open(json_path, "w", encoding="utf-8") as f:
-        json.dump(report, f, indent=2, default=str)
-
-    # optional: save uploaded raw log too
-    if log_text:
-        log_path = REPORTS_DIR / f"wireless_log_{timestamp}.log"
-        with open(log_path, "w", encoding="utf-8", errors="ignore") as f:
-            f.write(log_text)
-
-    return {
-        "json_report": str(json_path),
-        "raw_log": str(log_path) if log_text else None
-    }
-
-
-
 def run_analysis(log_text, start_dt=None, end_dt=None):
     az = WirelessAnalyzer(start_dt=start_dt, end_dt=end_dt)
-
     az.ingest(log_text)
-
     report = build_report(az)
-
-    saved_files = save_report_locally(report, log_text)
-
-    report["_saved_files"] = saved_files
-
     return report
 
 @app.post("/api/analyze")

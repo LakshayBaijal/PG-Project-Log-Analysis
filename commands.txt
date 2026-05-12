@@ -3,3 +3,6 @@ python -m uvicorn main:app --host 127.0.0.1 --port 8000
 http://127.0.0.1:8000
 
 2025-05-21 - 2025-05-21
+
+To generate Report
+python wireless_analyzer.py --log "d:\CSIS_IIIT_Hyderabad\4th Semester\PG Project\snmptrap-20250521.log" --out report.json

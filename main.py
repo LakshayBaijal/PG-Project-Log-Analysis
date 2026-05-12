@@ -69,48 +69,4 @@ def sample(start_datetime: str = None, end_datetime: str = None):
             
     return run_analysis(log_text, start_dt, end_dt)
 
-import subprocess
-import os
-from fastapi import HTTPException
-
-@app.post("/api/generate-report/")
-async def generate_report(report_type: str = Form(...)):
-    log_file = r"d:\CSIS_IIIT_Hyderabad\4th Semester\PG Project\snmptrap-20250521.log"
-    
-    if report_type == "general":
-        output_file = "report.json"
-        txt_file = None
-    elif report_type == "wireless":
-        output_file = "wireless_report.json"
-        txt_file = "wireless_report.txt"
-    else:
-        raise HTTPException(status_code=400, detail="Invalid report type")
-
-    command = [
-        "python",
-        "wireless_analyzer.py",
-        "--log",
-        log_file,
-        "--out",
-        output_file
-    ]
-    if txt_file:
-        command.extend(["--txt-report", txt_file])
-    
-    try:
-        subprocess.run(command, check=True, capture_output=True, text=True)
-        if report_type == "wireless":
-            if os.path.exists(txt_file):
-                return FileResponse(path=txt_file, filename=txt_file, media_type='text/plain')
-            else:
-                raise HTTPException(status_code=500, detail=f"Report file not found: {txt_file}")
-        else:
-            if os.path.exists(output_file):
-                return FileResponse(path=output_file, filename=output_file, media_type='application/json')
-            else:
-                raise HTTPException(status_code=500, detail=f"Report file not found: {output_file}")
-    except subprocess.CalledProcessError as e:
-        print(f"Error {e.stderr}")
-        raise HTTPException(status_code=500, detail="Failed to generate report")
-
 app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")

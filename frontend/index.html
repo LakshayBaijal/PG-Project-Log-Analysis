@@ -53,24 +53,12 @@
         <!-- Main Content -->
         <main class="main-content">
             <header>
-                <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                    <div>
-                        <h1>Security Analysis Dashboard</h1>
-                        <p class="subtitle">Real-time inference and threat detection from Cisco SNMP logs</p>
-                    </div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <form action="/api/generate-report/" method="post" style="margin: 0;">
-                            <input type="hidden" name="report_type" value="general">
-                            <button type="submit" class="btn secondary-btn" style="padding: 0.5rem 1rem;">Generate Report</button>
-                        </form>
-                        <form action="/api/generate-report/" method="post" style="margin: 0;">
-                            <input type="hidden" name="report_type" value="wireless">
-                            <button type="submit" class="btn secondary-btn" style="padding: 0.5rem 1rem;">Gen Wireless Report</button>
-                        </form>
-                        <div id="loading-spinner" class="spinner hidden">
-                            <i class="fa-solid fa-circle-notch fa-spin"></i> Processing...
-                        </div>
-                    </div>
+                <div>
+                    <h1>Security Analysis Dashboard</h1>
+                    <p class="subtitle">Real-time inference and threat detection from Cisco SNMP logs</p>
+                </div>
+                <div id="loading-spinner" class="spinner hidden">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Processing...
                 </div>
             </header>
 

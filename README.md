@@ -5,6 +5,9 @@
 This project is an end-to-end log analysis suite specifically designed to parse, analyze, and visualize Cisco wireless SNMP trap logs. It extracts actionable inferences that network administrators and security teams need, presenting facts about network usage, roaming, authentication failures, and potential security threats (e.g., rogue APs, deauth storms) without requiring extensive manual analysis.
 
 ---
+# Demo Video
+Uploading Screen Recording 2026-05-13 150017.mp4…
+---
 
 ## Project Overview
 

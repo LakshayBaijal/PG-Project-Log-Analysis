@@ -18,7 +18,12 @@ The system features both:
 ## Project Report
 
 For a complete academic context, the breakdown of our methodology, deep dives into OID hierarchies, and the real-world evaluation of this system over actual campus logs, please read parsing details covered in:
+
 **`Report/PG_Project_Report.pdf`**
+
+```br
+https://github.com/LakshayBaijal/PG-Project-Log-Analysis/blob/main/Report/PG_Project_Report.pdf
+```
 ---
 
 ## Features & Inferences

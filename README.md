@@ -243,6 +243,3 @@ Actionable insight: clients with `never_succeeded_auth: true` represent devices 
 This repository includes academic work for a PG project. Contact the author / project owner (maintainer listed in the `Report/PG_Project_Report.pdf`) for reuse, attribution, or collaboration.
 
 ---
-
-*README updated with results, sample output and interpretation guidance.*
-

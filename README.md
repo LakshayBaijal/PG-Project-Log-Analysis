@@ -6,7 +6,8 @@ This project is an end-to-end log analysis suite specifically designed to parse,
 
 ---
 # Demo Video
-Uploading Screen Recording 2026-05-13 150017.mp4…
+https://github.com/user-attachments/assets/b46b1b36-8acb-4941-8ea2-8d584705b0ac
+
 ---
 
 ## Project Overview

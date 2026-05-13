@@ -19,25 +19,6 @@ The system features both:
 
 For a complete academic context, the breakdown of our methodology, deep dives into OID hierarchies, and the real-world evaluation of this system over actual campus logs, please read parsing details covered in:
 **`Report/PG_Project_Report.pdf`**
-## Repository Structure
-
----
-```text
-📦 PG Project
- ┣ 📂 datasets/                  # Raw SNMP trap datasets (e.g., loghub)
- ┣ 📂 librenms-mibs-cisco/       # Extracted Cisco MIBs used for OID reference
- ┣ 📂 Report/                    # Contains PG_Project_Report.pdf detailing methodologies, experiments, and findings
- ┣ 📂 snmp_log_analysis/         # Core application directory
- ┃  ┣ 📂 frontend/               # Web application UI (index.html, app.js, style.css)
- ┃  ┣ 📜 main.py                 # FastAPI application server backend
- ┃  ┣ 📜 wireless_analyzer.py    # The core analysis engine script parsing OIDs
- ┃  ┣ 📜 name_to_oid.json        # Compiled OID mappings
- ┃  ┗ 📜 commands.txt            # Commands for running the application
- ┣ 📂 snmptrap_dataset/          # Additional sample log files for testing and evaluation
- ┣ 📜 split_log.py               # Utility to split large log files into parts (e.g. 30MB chunks)
- ┗ 📜 README.md                  # This file
-```
-
 ---
 
 ## Features & Inferences

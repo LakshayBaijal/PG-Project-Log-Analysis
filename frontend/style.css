@@ -157,6 +157,10 @@ input[type="file"] {
     font-family: var(--font-family);
 }
 
+.upload-section .btn + .btn {
+    margin-top: 0.75rem;
+}
+
 .primary-btn {
     background-color: var(--accent-blue);
     color: white;

@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const uploadBtn = document.getElementById('upload-btn');
-    const sampleBtn = document.getElementById('sample-btn');
     const fileInput = document.getElementById('log-upload');
     const loadingSpinner = document.getElementById('loading-spinner');
     const dashboardContent = document.getElementById('dashboard-content');
@@ -15,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let unstableClientsChartInstance = null;
     let activityTimelineInstance = null;
     let sessionDurationInstance = null;
+
+    let currentLogData = null; // Store data for MAC lookup
 
     // Navigation logic
     const navItems = {
@@ -68,36 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: formData
             });
             const data = await res.json();
+            currentLogData = data;
+            
+            // Show the MAC lookup container
+            const macLookupContainer = document.getElementById('mac-lookup-container');
+            if (macLookupContainer) {
+                macLookupContainer.classList.remove('hidden');
+            }
+            
             renderDashboard(data);
         } catch (err) {
             console.error(err);
             alert('Failed to analyze the log file.');
-        } finally {
-            hideLoading();
-        }
-    });
-
-    sampleBtn.addEventListener('click', async () => {
-        const startDt = document.getElementById('start-datetime').value;
-        const endDt = document.getElementById('end-datetime').value;
-
-        let url = '/api/sample';
-        const params = new URLSearchParams();
-        if (startDt) params.append('start_datetime', startDt);
-        if (endDt) params.append('end_datetime', endDt);
-
-        if (params.toString()) {
-            url += '?' + params.toString();
-        }
-
-        showLoading();
-        try {
-            const res = await fetch(url);
-            const data = await res.json();
-            renderDashboard(data);
-        } catch (err) {
-            console.error(err);
-            alert('Failed to load sample data. Ensure the sample file exists.');
         } finally {
             hideLoading();
         }
@@ -116,6 +99,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderDashboard(data) {
 
         dashboardContent.classList.remove('hidden');
+        
+        const txtBtn = document.getElementById('download-txt-btn');
+        const jsonBtn = document.getElementById('download-json-btn');
+        
+        if (txtBtn && jsonBtn) {
+            txtBtn.href = '/download/txt';
+            jsonBtn.href = '/download/json';
+            txtBtn.classList.remove('hidden');
+            jsonBtn.classList.remove('hidden');
+        }
 
         renderMetrics(data);
 
@@ -796,4 +789,209 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // MAC Address Lookup Logic
+    const macLookupBtn = document.getElementById('mac-lookup-btn');
+    const macLookupInput = document.getElementById('mac-lookup-input');
+    const macModal = document.getElementById('mac-modal');
+    const macModalClose = document.getElementById('mac-modal-close');
+    const macModalBody = document.getElementById('mac-modal-body');
+
+    if (macLookupBtn && macLookupInput) {
+        macLookupBtn.addEventListener('click', () => performMacLookup());
+        macLookupInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performMacLookup();
+        });
+    }
+
+    if (macModalClose) {
+        macModalClose.addEventListener('click', () => {
+            macModal.style.display = 'none';
+        });
+    }
+
+    window.addEventListener('click', (e) => {
+        if (e.target == macModal) {
+            macModal.style.display = 'none';
+        }
+    });
+
+    function performMacLookup() {
+        if (!currentLogData || !currentLogData.clients) {
+            alert('Please analyze a log file first.');
+            return;
+        }
+
+        let rawMac = macLookupInput.value.trim().toUpperCase();
+        if (!rawMac) {
+            alert('Please enter a MAC address.');
+            return;
+        }
+
+        // Normalize MAC address format to XX:XX:XX:XX:XX:XX
+        let searchMac = rawMac.replace(/[^A-F0-9]/g, '');
+        if (searchMac.length === 12) {
+            searchMac = searchMac.match(/.{1,2}/g).join(':');
+        } else {
+            searchMac = rawMac; // Fallback to raw if logic doesn't apply
+        }
+
+        const clientData = currentLogData.clients.find(c => c.mac === searchMac || c.mac === rawMac);
+
+        if (!clientData) {
+            // Check if it's an AP
+            const apData = (currentLogData.ap_summary || []).find(a => String(a.ap).toUpperCase() === searchMac || String(a.ap).toUpperCase() === rawMac);
+            if (apData) {
+                renderApModalContent(apData);
+                return;
+            }
+
+            alert(`No data found for MAC/Device: ${searchMac}`);
+            return;
+        }
+
+        renderClientModalContent(clientData);
+    }
+
+    function renderClientModalContent(c) {
+        let html = `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">`;
+        
+        let connectedTime = c.total_connected_human || '0s';
+        let usernames = (c.usernames_seen && c.usernames_seen.length > 0) ? c.usernames_seen.join(', ') : 'N/A';
+        let ips = (c.ips_seen && c.ips_seen.length > 0) ? c.ips_seen.join(', ') : 'N/A';
+
+        // Threat Heuristics Logic
+        let threatColor = "var(--text-secondary)";
+        let threatMsg = "Benign Client behavior detected. No immediate anomalies.";
+        let threatIcon = "fa-circle-check";
+        
+        if (c.auth_failures > 50 && c.auth_successes === 0) {
+            threatColor = "#ef4444"; // red
+            threatMsg = "HIGH RISK: Potential Brute Force or Password Spraying attack. High failures with zero success.";
+            threatIcon = "fa-triangle-exclamation";
+        } else if (c.auth_failures > 30 && c.auth_successes > 0) {
+            threatColor = "#f59e0b"; // orange
+            threatMsg = "WARNING: Sporadic authentication issues. Possibly bad saved credentials or intermittent auth drops.";
+            threatIcon = "fa-triangle-exclamation";
+        } else if (c.roam_count > 30) {
+            threatColor = "#f59e0b"; // orange
+            threatMsg = "WARNING: Fast moving client (Ping-Ponging). Bouncing repeatedly across APs, indicates bad network geometry or a moving target.";
+            threatIcon = "fa-person-running";
+        } else if (c.sessions_under_30s > 10) {
+            threatColor = "#f59e0b"; // orange
+            threatMsg = "WARNING: Highly unstable connection. Dropping sessions under 30s rapidly.";
+            threatIcon = "fa-plug-circle-xmark";
+        }
+
+        // Threat Box (Spans full width)
+        html += `
+            <div style="grid-column: 1 / -1; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; border-left: 5px solid ${threatColor};">
+                <h3 style="margin-top: 0; color: ${threatColor};"><i class="fa-solid ${threatIcon}"></i> Behavioral Threat Assessment</h3>
+                <p style="margin-bottom: 0; font-size: 1.05rem;">${threatMsg}</p>
+            </div>
+        `;
+
+        // Basic Info
+        html += `
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                <h3 style="margin-top: 0; color: var(--accent-blue);">Basic Information</h3>
+                <p><strong>MAC:</strong> ${c.mac}</p>
+                <p><strong>Usernames:</strong> ${usernames}</p>
+                <p><strong>IPs:</strong> ${ips}</p>
+                <p><strong>First Seen:</strong> ${new Date(c.first_seen).toLocaleString()}</p>
+                <p><strong>Last Seen:</strong> ${new Date(c.last_seen).toLocaleString()}</p>
+                <p><strong>Total Connected Time:</strong> ${connectedTime}</p>
+            </div>
+        `;
+
+        // Connection Stats
+        html += `
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                <h3 style="margin-top: 0; color: var(--accent-blue);">Connection Stats</h3>
+                <p><strong>Total Events:</strong> ${c.total_event_count}</p>
+                <p><strong>Completed Sessions:</strong> ${c.completed_sessions}</p>
+                <p><strong>Auth Successes:</strong> ${c.auth_successes}</p>
+                <p><strong>Auth Failures:</strong> <span style="${c.auth_failures > 0 ? 'color:#ef4444;font-weight:bold;' : ''}">${c.auth_failures}</span></p>
+                <p><strong>Roaming Count:</strong> ${c.roam_count}</p>
+                <p><strong>Off-Hours Sessions:</strong> ${c.off_hours_sessions}</p>
+            </div>
+        `;
+
+        // Roaming Path
+        if (c.roam_path && c.roam_path.length > 0) {
+            let pathSequence = [];
+            
+            // Check if roam_path contains objects or just strings (fallback for cached/older structures)
+            if (typeof c.roam_path[0] === 'object' && c.roam_path[0] !== null) {
+                if (c.roam_path[0].from_ap) {
+                    pathSequence.push(c.roam_path[0].from_ap);
+                }
+                c.roam_path.forEach(r => {
+                    if (r.to_ap) pathSequence.push(r.to_ap);
+                });
+            } else {
+                // If it was somehow an array of strings, use it directly
+                pathSequence = c.roam_path;
+            }
+            
+            let pathHtml = pathSequence.map(ap => `<span style="background: var(--accent-blue); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem;">${typeof ap === 'object' ? JSON.stringify(ap) : ap}</span>`).join(' <i class="fa-solid fa-arrow-right" style="color: var(--text-secondary);"></i> ');
+            
+            html += `
+                <div style="grid-column: 1 / -1; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                    <h3 style="margin-top: 0; color: var(--accent-blue);">Roaming Path</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; max-height: 200px; overflow-y: auto;">
+                        ${pathHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        // APs and SSIDs
+        html += `
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                <h3 style="margin-top: 0; color: var(--accent-blue);">APs Visited</h3>
+                <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem;">
+                    ${c.aps_visited.map(ap => `<li>${ap}</li>`).join('')}
+                </ul>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                <h3 style="margin-top: 0; color: var(--accent-blue);">SSIDs Used</h3>
+                <ul style="margin: 0; padding-left: 20px; font-size: 0.9rem;">
+                    ${c.ssids_used.map(ssid => `<li>${ssid}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+
+        html += `</div>`;
+        macModalBody.innerHTML = html;
+        document.getElementById('mac-modal-title').innerHTML = `<i class="fa-solid fa-laptop"></i> Client Device Details`;
+        macModal.style.display = 'block';
+    }
+
+    function renderApModalContent(a) {
+        let html = `<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">`;
+        html += `
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                <h3 style="margin-top: 0; color: var(--accent-blue);">AP Information</h3>
+                <p><strong>Name/MAC:</strong> ${a.ap}</p>
+                <p><strong>Total Sessions:</strong> ${a.total_sessions}</p>
+                <p><strong>Unique Clients:</strong> ${a.unique_clients}</p>
+                <p><strong>Repeat Visitors:</strong> ${a.repeat_visitors}</p>
+                <p><strong>Peak Hour:</strong> ${a.peak_hour}:00</p>
+                <p><strong>Link Flaps:</strong> <span style="${a.link_flaps > 0 ? 'color:#ef4444;font-weight:bold;' : ''}">${a.link_flaps}</span></p>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                <h3 style="margin-top: 0; color: var(--accent-blue);">Event Breakdown</h3>
+                <p><strong>Total Events:</strong> ${a.total_events}</p>
+                <p><strong>Auth Failures:</strong> ${a.auth_failures}</p>
+                <p><strong>Deauths:</strong> ${a.deauths}</p>
+                <p><strong>Disassocs:</strong> ${a.disassocs}</p>
+            </div>
+        `;
+        html += `</div>`;
+        macModalBody.innerHTML = html;
+        document.getElementById('mac-modal-title').innerHTML = `<i class="fa-solid fa-wifi"></i> Access Point Details`;
+        macModal.style.display = 'block';
+    }
+
 });

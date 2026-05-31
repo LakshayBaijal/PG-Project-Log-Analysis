@@ -45,20 +45,41 @@
                 </div>
 
                 <button id="upload-btn" class="btn primary-btn">Analyze File</button>
-                <div class="divider"><span>OR</span></div>
-                <button id="sample-btn" class="btn secondary-btn">Run Sample Data</button>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header>
-                <div>
-                    <h1>Security Analysis Dashboard</h1>
-                    <p class="subtitle">Real-time inference and threat detection from Cisco SNMP logs</p>
+            <header style="flex-wrap: wrap;">
+                <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-start;">
+                    <div>
+                        <h1>Security Analysis Dashboard</h1>
+                        <p class="subtitle">Real-time inference and threat detection from Cisco SNMP logs</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div id="loading-spinner" class="spinner hidden">
+                            <i class="fa-solid fa-circle-notch fa-spin"></i> Processing...
+                        </div>
+                        <a href="#" class="btn primary-btn hidden" id="download-txt-btn" download="wireless_report.txt"
+                            style="background-color: var(--accent-blue);"><i class="fa-solid fa-file-lines"></i> Download
+                            TXT</a>
+                        <a href="#" class="btn primary-btn hidden" id="download-json-btn" download="wireless_report.json"
+                            style="background-color: var(--accent-blue);"><i class="fa-solid fa-file-code"></i> Download
+                            JSON</a>
+                    </div>
                 </div>
-                <div id="loading-spinner" class="spinner hidden">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i> Processing...
+
+                <div style="width: 100%; margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+                    <div id="mac-lookup-container" class="hidden"
+                        style="display: flex; align-items: center; gap: 0.5rem; background: var(--bg-panel); padding: 0.6rem 1rem; border-radius: 8px; border: 2px solid var(--accent-blue); box-shadow: 0 4px 10px rgba(0,0,0,0.2); width: 100%; max-width: 600px;">
+                        <input type="text" id="mac-lookup-input"
+                            placeholder="Threat Lookup - Enter MAC Address (e.g. AA:BB:CC:DD:EE:FF)"
+                            style="background: transparent; border: none; color: var(--text-primary); outline: none; padding: 0.5rem; flex-grow: 1; font-size: 1.05rem;">
+                        <button id="mac-lookup-btn" class="btn primary-btn"
+                            style="padding: 0.6rem 1.2rem; font-weight: bold; font-size: 1.05rem; background-color: #ef4444;">
+                            <i class="fa-solid fa-search"></i> Inspect Device
+                        </button>
+                    </div>
                 </div>
             </header>
 
@@ -264,7 +285,20 @@
             </div>
         </main>
     </div>
-    <script src="app.js"></script>
+    <script src="app.js?v=2026version"></script>
+
+    <!-- MAC Address Lookup Modal -->
+    <div id="mac-modal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(2px);">
+        <div class="modal-content" style="background-color: var(--bg-panel); margin: 10% auto; padding: 20px; border: 1px solid var(--border); width: 80%; max-width: 800px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); color: var(--text-primary);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                <h2 id="mac-modal-title" style="margin: 0; color: var(--accent-blue);"><i class="fa-solid fa-laptop-code"></i> MAC Address Details</h2>
+                <span class="close-btn" id="mac-modal-close" style="color: var(--text-secondary); float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            </div>
+            <div id="mac-modal-body">
+                <!-- Content populated by JS -->
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
